@@ -9,7 +9,7 @@
     --primary-color: #fff;
     --primary-color-dark: #f1f1f1;
     --text-dark: #000000;
-    --text-light: var(rgb(32, 34, 35), #212b36);
+    --text-light: var(--primary-color-dark, #212b36);
     --font-sans: "Century Gothic", Tahoma, Arial, sans-serif;
     --font-serif: Georgia, Times, "Times New Roman", serif;
     --font-family:
