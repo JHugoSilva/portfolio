@@ -40,40 +40,34 @@ class AboutController extends Controller
         $about->cv = $request->cv;
 
 
-        if ($request->home_image != $about->home_image) {
-            $home_image = \public_path() . "/upload/" . $about->home_image;
+        if ($request->hasFile('home_image')) {
+            $home_image = public_path("/upload/" . $about->home_image);
             if (file_exists($home_image)) {
                 @unlink($home_image);
             }
-            $home_image_name = time() . "." . request()->home_image->getClientOriginalExtension();
-            \request()->home_image->move(public_path('upload'), $home_image_name);
+            $home_image_name = uniqid() . "." . $request->home_image->getClientOriginalExtension();
+            $request->home_image->move(public_path('upload'), $home_image_name);
             $about->home_image = $home_image_name;
-        } else {
-            $about->home_image = $about->home_image;
         }
 
-        if ($request->banner_image != $about->banner_image) {
-            $banner_image = \public_path() . "/upload/" . $about->banner_image;
+        if ($request->hasFile('banner_image')) {
+            $banner_image = public_path("/upload/" . $about->banner_image);
             if (file_exists($banner_image)) {
                 @unlink($banner_image);
             }
-            $banner_image_name = time() . "." . request()->banner_image->getClientOriginalExtension();
-            \request()->banner_image->move(public_path('upload'), $banner_image_name);
-            $about->banner_image = $banner_image_name;
-        } else {
-            $about->banner_image = $about->banner_image;
-        }
+            $banner_image_name = uniqid() . "." . $request->banner_image->getClientOriginalExtension();
+            $request->banner_image->move(public_path('upload'), $banner_image_name);
 
-        if ($request->cv != $about->cv) {
-            $cv = \public_path() . "/upload/" . $about->cv;
+            $about->banner_image = $banner_image_name;
+        }
+        if ($request->hasFile('cv')) {
+            $cv = public_path("/upload/" . $about->cv);
             if (file_exists($cv)) {
                 @unlink($cv);
             }
-            $cv_name = time() . "." . request()->cv->getClientOriginalExtension();
-            \request()->cv->move(public_path('upload'), $cv_name);
+            $cv_name = uniqid() . "." . $request->cv->getClientOriginalExtension();
+            $request->cv->move(public_path('upload'), $cv_name);
             $about->cv = $cv_name;
-        } else {
-            $about->cv = $about->cv;
         }
 
         $about->save();

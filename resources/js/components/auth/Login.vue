@@ -4,8 +4,8 @@ import { useRouter } from "vue-router";
 import api from "../../lib/Api";
 
 const form = reactive({
-    email: "",
-    password: "",
+    email: "claud87@example.com",
+    password: "password",
 });
 
 const router = useRouter();

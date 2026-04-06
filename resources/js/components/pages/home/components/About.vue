@@ -1,5 +1,19 @@
 <script setup>
 defineProps(["about"]);
+const getHomeImage = (img) => {
+    if (img) {
+        return "/upload/" + img;
+    } else {
+        return "/template/assets/img/avatar.jpg";
+    }
+};
+const getCvDownload = (cv) => {
+    if (cv) {
+        return "/upload/" + cv;
+    } else {
+        return null;
+    }
+};
 </script>
 <template>
     <!--==================== ABOUT ====================-->
@@ -9,7 +23,7 @@ defineProps(["about"]);
 
         <div class="about_container container grid">
             <img
-                src="/public/template/assets/img/about-img.png"
+                :src="getHomeImage(about.home_image)"
                 alt=""
                 class="about_img"
             />
@@ -40,8 +54,10 @@ defineProps(["about"]);
                 </div>
                 <div class="about_buttons">
                     <a
-                        href="/public/template/assets/pdf/johndoe-Cv.pdf"
+                        v-if="getCvDownload(about.cv)"
+                        :href="getCvDownload(about.cv)"
                         class="button button--flex"
+                        download
                     >
                         Download CV
                         <i class="uil uil-download-alt button_icon"></i>
