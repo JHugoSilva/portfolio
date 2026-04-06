@@ -57,6 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('v1')->group(function () {
         Route::controller(AboutController::class)->group(function () {
+            Route::get('about', 'show');
             Route::post('about', 'update');
         });
         Route::controller(MediaController::class)->group(function () {
@@ -64,23 +65,27 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('medias/{media}', 'destroy');
         });
         Route::controller(ServiceController::class)->group(function () {
+            Route::get('services', 'index');
             Route::post('services', 'store');
             Route::post('services/{service}', 'update');
             Route::delete('services/{id}', 'destroy');
         });
         Route::controller(SkillController::class)->group(function () {
+            Route::get('skills', 'index');
             Route::post('skills', 'store');
             // Route::post('services/{service}', 'update');
             // Route::delete('services/{id}', 'destroy');
         });
 
         Route::controller(EducationController::class)->group(function () {
+            Route::get('educations', 'index');
             Route::post('educations', 'store');
             Route::post('educations/{education}', 'update');
             Route::delete('educations/{id}', 'destroy');
         });
 
         Route::controller(ExperienceController::class)->group(function () {
+            Route::get('experiences', 'index');
             Route::post('experiences', 'store');
             Route::post('experiences/{experience}', 'update');
             Route::delete('experiences/{id}', 'destroy');

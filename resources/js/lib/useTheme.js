@@ -1,8 +1,6 @@
 // composables/useTheme.js
 export function useTheme(buttonId = "theme-button") {
     const initTheme = () => {
-        console.log("AQI");
-
         const themeButton = document.getElementById(buttonId);
         if (!themeButton) return;
 
