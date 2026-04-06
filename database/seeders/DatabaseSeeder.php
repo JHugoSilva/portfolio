@@ -23,9 +23,10 @@ class DatabaseSeeder extends Seeder
                 SkillSeeder::class,
                 ProjectSeeder::class,
                 TestimonialSeeder::class,
+                UsersTableSeeder::class
             ]
         );
-        User::factory(10)->create();
+        // User::factory(10)->create();
 
         // User::factory()->create([
         //     'name' => 'Test User',
