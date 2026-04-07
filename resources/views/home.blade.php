@@ -17,6 +17,6 @@
         <div id="app"></div>
 
         <!--==================== MAIN JS ====================-->
-        <script src="/template/assets/js/main.js"></script>
+        {{-- <script src="/template/assets/js/main.js"></script> --}}
     </body>
 </html>
