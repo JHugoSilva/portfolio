@@ -8,12 +8,14 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-
+<link rel="stylesheet" href="{{ asset('template/assets/css/admin.css') }}">
+<link rel="stylesheet" href="{{ asset('template/assets/fonts/fontawesome-free/css/all.min.css') }}">
+<link rel="stylesheet" href="{{ asset('template/assets/fonts/unicons/css/line.css') }}">
+@vite('resources/js/app.js')
 
     </head>
     <body>
         <div id="admin"></div>
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
  </body>
 
 </html>
