@@ -23,7 +23,7 @@ const getCvDownload = (cv) => {
 
         <div class="about_container container grid">
             <div class="banner_img">
-                <img :src="about.banner_image" alt="Banner Image" />
+                <img :src="about?.banner_image" alt="Banner Image" />
             </div>
             <div class="about_data">
                 <p class="about_description" v-if="about && about.summary">

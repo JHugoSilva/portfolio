@@ -7,7 +7,7 @@ defineProps(["about"]);
     <section class="home section" id="home">
         <div class="home_container container grid">
             <div class="home_img">
-                <img :src="about.home_image" alt="Home Image" />
+                <img :src="about?.home_image" alt="Home Image" />
             </div>
             <!-- {{ about }} -->
             <div class="home_data">

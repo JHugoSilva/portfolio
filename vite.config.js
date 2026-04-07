@@ -28,12 +28,12 @@ export default defineConfig({
     plugins: [
         vue(),
         laravel({
-            input: "resources/js/app.js", // seu entry point
-            buildDirectory: "build", // pasta que será criada dentro do public do Laravel
+            input: ["resources/css/app.css", "resources/js/app.js"], // ✅ incluir CSS
+            buildDirectory: "build",
         }),
     ],
     build: {
-        outDir: path.resolve(__dirname, "public/build"), // importante: Laravel precisa enxergar aqui
+        outDir: path.resolve(__dirname, "public/build"),
         emptyOutDir: true,
         rollupOptions: {
             output: {
