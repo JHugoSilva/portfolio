@@ -20,16 +20,17 @@ let errors = ref([]);
 
 const getAbout = async () => {
     await api.get("/v1/about").then(({ data }) => {
-        form.name = data.about.name;
-        form.home_image = data.about.home_image;
-        form.banner_image = data.about.banner_image;
-        form.phone = data.about.phone;
-        form.email = data.about.email;
-        form.address = data.about.address;
-        form.description = data.about.description;
-        form.summary = data.about.summary;
-        form.tagline = data.about.tagline;
-        form.cv = data.about.cv;
+        form.name = data.data.name;
+        form.home_image = data.data.home_image;
+        form.banner_image = data.data.banner_image;
+        form.phone = data.data.phone;
+        form.email = data.data.email;
+        form.address = data.data.address;
+        form.description = data.data.description;
+        form.summary = data.data.summary;
+        form.tagline = data.data.tagline;
+        form.cv = data.data.cv;
+        console.log("Edit", data);
     });
 };
 

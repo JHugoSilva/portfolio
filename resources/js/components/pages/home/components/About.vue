@@ -22,7 +22,7 @@ const getCvDownload = (cv) => {
         <span class="section__subtitle">My introduction</span>
 
         <div class="about_container container grid">
-            <div v-if="about && about.home_image">
+            <div v-if="about && about.banner_image">
                 <img :src="about.banner_image" alt="Banner Image" />
             </div>
             <div v-else>Carregando...</div>
