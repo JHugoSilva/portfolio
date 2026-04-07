@@ -20,7 +20,8 @@ const experiences = ref([]);
 
 const getAbout = async () => {
     await api.get("site/about").then((response) => {
-        about.value = response.data.about;
+        about.value = response.data.data;
+        
     });
 };
 

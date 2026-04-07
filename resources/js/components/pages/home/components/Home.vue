@@ -1,12 +1,6 @@
 <script setup>
 defineProps(["about"]);
-const getHomeImage = (img) => {
-    if (img) {
-        return "/upload/" + img;
-    } else {
-        return "/template/assets/img/avatar.jpg";
-    }
-};
+
 </script>
 
 <template>
@@ -14,7 +8,7 @@ const getHomeImage = (img) => {
     <section class="home section" id="home">
         <div class="home_container container grid">
             <div class="home_img">
-                <img :src="getHomeImage(about.banner_image)" alt="" />
+                <img :src="about.home_image" alt="" />
             </div>
 
             <div class="home_data">

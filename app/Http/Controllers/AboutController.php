@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AboutResource;
 use App\Models\About;
 use Illuminate\Http\Request;
 
@@ -18,9 +19,7 @@ class AboutController extends Controller
     public function show()
     {
         $about = About::find(1);
-        return response()->json([
-            'about' => $about
-        ], 200);
+        return new AboutResource($about);
     }
 
     public function update(Request $request)
