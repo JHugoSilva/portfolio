@@ -1,6 +1,5 @@
 <script setup>
 defineProps(["about"]);
-
 </script>
 
 <template>
@@ -8,7 +7,10 @@ defineProps(["about"]);
     <section class="home section" id="home">
         <div class="home_container container grid">
             <div class="home_img">
-                <img :src="about.home_image" alt="" />
+                <div v-if="about && about.home_image">
+                    <img :src="about.home_image" alt="Home Image" />
+                </div>
+                <div v-else>Carregando...</div>
             </div>
 
             <div class="home_data">
