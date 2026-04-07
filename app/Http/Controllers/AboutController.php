@@ -11,9 +11,7 @@ class AboutController extends Controller
     public function edit()
     {
         $about = About::latest()->first();
-        return response()->json([
-            'about' => $about
-        ], 200);
+        return new AboutResource($about);
     }
 
     public function show()
