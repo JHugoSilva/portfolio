@@ -28,7 +28,7 @@ const getCvDownload = (cv) => {
             <div v-else>Carregando...</div>
 
             <div class="about_data">
-                <p class="about_description">
+                <p class="about_description" v-if="about && about.summary">
                     {{ about.summary }}
                 </p>
                 <div class="about_info">
