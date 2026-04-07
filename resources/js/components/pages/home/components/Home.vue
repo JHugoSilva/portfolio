@@ -7,12 +7,9 @@ defineProps(["about"]);
     <section class="home section" id="home">
         <div class="home_container container grid">
             <div class="home_img">
-                <!-- <div v-if="about && about.home_image">
-                    <img :src="about.home_image" alt="Home Image" />
-                </div>
-                <div v-else>Carregando...</div> -->
+                <img :src="about.home_image" alt="Home Image" />
             </div>
-
+            <!-- {{ about }} -->
             <div class="home_data">
                 <h1 class="home_title">Olá, eu sou {{ about.name }}</h1>
                 <h3 class="home_subtitle">{{ about.tagline }}</h3>

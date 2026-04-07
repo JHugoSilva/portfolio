@@ -22,15 +22,13 @@ const getCvDownload = (cv) => {
         <span class="section__subtitle">My introduction</span>
 
         <div class="about_container container grid">
-            <div v-if="about && about.banner_image">
+            <div class="banner_img">
                 <img :src="about.banner_image" alt="Banner Image" />
             </div>
-            <div v-else>Carregando...</div>
-
             <div class="about_data">
-                <!-- <p class="about_description" v-if="about && about.summary">
+                <p class="about_description" v-if="about && about.summary">
                     {{ about.summary }}
-                </p> -->
+                </p>
                 <div class="about_info">
                     <div>
                         <span class="about_info-title">08+</span>

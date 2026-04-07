@@ -94,7 +94,6 @@ const handleSave = async () => {
                 icon: "success",
                 title: "About me Updated",
             });
-            console.log(data);
 
             getAbout();
         })
@@ -181,7 +180,7 @@ onMounted(async () => {
                             <div class="card">
                                 <label>Home Image</label>
                                 <img
-                                    :src="getHomeImage()"
+                                    :src="form.home_image"
                                     class="avatar_img"
                                     id="home-img"
                                 />
@@ -193,7 +192,7 @@ onMounted(async () => {
                             <div class="card">
                                 <label>About Image</label>
                                 <img
-                                    :src="getBannerImage()"
+                                    :src="form.banner_image"
                                     class="avatar_img"
                                     id="banner-img"
                                 />
