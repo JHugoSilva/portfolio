@@ -26,4 +26,5 @@ export default defineConfig({
         },
         assetsDir: "assets", // mantém todos os assets dentro de /build/assets
     },
+    base: "/build/", // caminho relativo no navegador
 });
