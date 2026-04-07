@@ -13,7 +13,7 @@ import Footer from "./Footer.vue";
 import api from "../../../../lib/Api";
 import { onMounted, ref } from "vue";
 
-const about = ref([]);
+const about = ref({});
 const skills = ref([]);
 const educations = ref([]);
 const experiences = ref([]);
@@ -21,7 +21,6 @@ const experiences = ref([]);
 const getAbout = async () => {
     await api.get("site/about").then((response) => {
         about.value = response.data.data;
-        
     });
 };
 
