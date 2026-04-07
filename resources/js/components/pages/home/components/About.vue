@@ -28,9 +28,9 @@ const getCvDownload = (cv) => {
             <div v-else>Carregando...</div>
 
             <div class="about_data">
-                <p class="about_description" v-if="about && about.summary">
+                <!-- <p class="about_description" v-if="about && about.summary">
                     {{ about.summary }}
-                </p>
+                </p> -->
                 <div class="about_info">
                     <div>
                         <span class="about_info-title">08+</span>
