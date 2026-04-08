@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->string('address')->nullable();
             $table->string('description')->nullable();
-            $table->string('summary')->nullable();
+            $table->text('summary')->nullable();
             $table->string('tagline')->nullable();
             $table->string('cv')->nullable();
             $table->timestamps();
