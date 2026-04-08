@@ -1,0 +1,8 @@
+/* 1. Fontes Externas (Bunny Fonts) */
+@import url("https://fonts.bunny.net/css?family=instrument-sans:400,500,600");
+
+/* 2. Arquivos Locais (Caminho relativo ao arquivo admin.css) */
+/* Partindo de resources/css/, precisamos subir duas pastas para chegar na raiz e entrar em public/ */
+@import "../../public/template/assets/css/admin.css";
+@import "../../public/template/assets/fonts/fontawesome-free/css/all.min.css";
+@import "../../public/template/assets/fonts/unicons/css/line.css";

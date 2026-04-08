@@ -1,0 +1,10 @@
+/* Importando fontes e ícones */
+@import url("../../public/template/assets/fonts/unicons/css/line.css");
+
+/* Importando bibliotecas (Swiper) */
+@import url("../../public/template/assets/css/swiper-bundle.min.css");
+
+/* Importando seus estilos personalizados */
+@import url("../../public/template/assets/css/styles.css");
+
+/* Seus outros estilos do app.css vêm aqui abaixo */

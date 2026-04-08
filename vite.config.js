@@ -5,14 +5,15 @@ import path from "path";
 
 export default defineConfig({
     plugins: [
+        vue(), // plugin Vue
         laravel({
             input: [
                 "resources/css/app.css", // CSS puro
+                "resources/css/admin.css", // CSS puro
                 "resources/js/app.js", // JS com Vue
             ],
             refresh: true, // atualiza Blade automaticamente
         }),
-        vue(), // plugin Vue
     ],
     build: {
         outDir: path.resolve(__dirname, "public/build"), // pasta final
