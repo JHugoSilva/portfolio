@@ -22,6 +22,7 @@ const getCvDownload = (cv) => {
         <span class="section__subtitle">My introduction</span>
 
         <div class="about_container container grid">
+            <!-- {{ about }} -->
             <div class="setting-avatar">
                 <img
                     :src="about?.banner_image"
@@ -54,12 +55,7 @@ const getCvDownload = (cv) => {
                     </div>
                 </div>
                 <div class="about_buttons">
-                    <a
-                        v-if="getCvDownload(about.cv)"
-                        :href="getCvDownload(about.cv)"
-                        class="button button--flex"
-                        download
-                    >
+                    <a :href="about.cv" class="button button--flex" download>
                         Download CV
                         <i class="uil uil-download-alt button_icon"></i>
                     </a>

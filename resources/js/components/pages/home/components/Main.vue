@@ -17,6 +17,7 @@ const about = ref({});
 const skills = ref([]);
 const educations = ref([]);
 const experiences = ref([]);
+const medias = ref({});
 
 const getAbout = async () => {
     await api.get("site/about").then((response) => {
@@ -43,11 +44,18 @@ const getExperiences = async () => {
     });
 };
 
+const getMedias = async () => {
+    await api.get("site/medias").then((response) => {
+        medias.value = response.data.medias;
+    });
+};
+
 onMounted(async () => {
     getAbout();
     getSkills();
     getEducations();
     getExperiences();
+    getMedias();
 });
 </script>
 
@@ -55,7 +63,7 @@ onMounted(async () => {
     <!--==================== MAIN ====================-->
     <Header />
     <main class="main">
-        <Home :about="about" />
+        <Home :about="about" :medias="medias" />
         <About :about="about" />
         <Skill :skills="skills" />
         <Qualification :educations="educations" :experiences="experiences" />

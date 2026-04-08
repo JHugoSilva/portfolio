@@ -1,5 +1,5 @@
 <script setup>
-defineProps(["about"]);
+defineProps(["about", "medias"]);
 </script>
 
 <template>
@@ -32,29 +32,6 @@ defineProps(["about"]);
 
                 <div class="home_social">
                     <span class="home_social-follow">Siga-me</span>
-                    <div class="home_social-links">
-                        <a
-                            href="https://www.linkedin.com"
-                            target="_blank"
-                            class="home_social-icon"
-                        >
-                            <i class="uil uil-linkedin-alt"></i>
-                        </a>
-                        <a
-                            href="https://www.dribbble.com"
-                            target="_blank"
-                            class="home_social-icon"
-                        >
-                            <i class="uil uil-dribbble"></i>
-                        </a>
-                        <a
-                            href="https://www.github.com"
-                            target="_blank"
-                            class="home_social-icon"
-                        >
-                            <i class="uil uil-github-alt"></i>
-                        </a>
-                    </div>
                 </div>
 
                 <div class="home_scroll_social">
@@ -70,29 +47,19 @@ defineProps(["about"]);
                             <i class="uil uil-arrow-down home_scroll-arrow"></i>
                         </a>
                     </div>
-
+                    <!-- {{ medias }} -->
                     <div class="home_social1">
-                        <div class="home_social-link">
+                        <div
+                            class="home_social-links"
+                            v-for="media in medias"
+                            :key="media.id"
+                        >
                             <a
-                                href="https://www.linkedin.com"
+                                :href="media.link"
                                 target="_blank"
                                 class="home_social-icon"
                             >
-                                <i class="uil uil-linkedin-alt"></i>
-                            </a>
-                            <a
-                                href="https://www.dribbble.com"
-                                target="_blank"
-                                class="home_social-icon"
-                            >
-                                <i class="uil uil-dribbble"></i>
-                            </a>
-                            <a
-                                href="https://www.github.com"
-                                target="_blank"
-                                class="home_social-icon"
-                            >
-                                <i class="uil uil-github-alt"></i>
+                                <i :class="`uil uil-${media.icon}`"></i>
                             </a>
                         </div>
                     </div>
