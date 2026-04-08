@@ -13,15 +13,20 @@ class AboutSeeder extends Seeder
      */
     public function run(): void
     {
-        About::factory()->count(10)->create();
+        // Limpa a tabela para não duplicar dados ao rodar o comando novamente
+        \DB::table('abouts')->truncate();
 
-        // About::factory()->create([
-        //     'name' => 'João Hugo',
-        //     'email' => 'joao@email.com',
-        //     'address' => 'Natal - RN',
-        //     'description' => 'Desenvolvedor Full Stack com foco em Laravel e Vue.js',
-        //     'summary' => 'Experiência sólida em backend e frontend moderno',
-        //     'tagline' => 'Transformando ideias em código',
-        // ]);
+        \DB::table('abouts')->insert([
+            [
+                'name' => 'João Hugo',
+                'email' => 'joao@email.com',
+                'address' => 'Natal - RN',
+                'description' => 'Desenvolvedor Full Stack com foco em Laravel e Vue.js',
+                'summary' => 'Experiência sólida em backend e frontend moderno',
+                'tagline' => 'Transformando ideias em código',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 }
