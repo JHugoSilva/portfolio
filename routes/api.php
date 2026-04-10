@@ -31,6 +31,8 @@ Route::prefix('auth')->group(function () {
     });
 });
 
+
+
 Route::prefix('site')->group(function () {
     Route::controller(AboutController::class)->group(function () {
         Route::get('about', 'show');
@@ -77,8 +79,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::controller(SkillController::class)->group(function () {
             Route::get('skills', 'index');
             Route::post('skills', 'store');
-            // Route::post('services/{service}', 'update');
-            // Route::delete('services/{id}', 'destroy');
+            Route::post('skills/{skill}', 'update');
+            Route::delete('skills/{skill}', 'destroy');
         });
 
         Route::controller(EducationController::class)->group(function () {

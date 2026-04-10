@@ -18,11 +18,11 @@ const skills = ref([]);
 const educations = ref([]);
 const experiences = ref([]);
 const medias = ref({});
+const counts = ref({});
 
 const getAbout = async () => {
     await api.get("site/about").then((response) => {
         about.value = response.data.data;
-        console.log(about.value);
     });
 };
 
@@ -47,6 +47,12 @@ const getExperiences = async () => {
 const getMedias = async () => {
     await api.get("site/medias").then((response) => {
         medias.value = response.data.medias;
+    });
+};
+
+const getTotais = async () => {
+    await api.get("dashboard").then((response) => {
+        counts.value = response.data.medias;
     });
 };
 

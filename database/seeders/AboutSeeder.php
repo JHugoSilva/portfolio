@@ -22,14 +22,19 @@ class AboutSeeder extends Seeder
                 'name' => 'Hugo Silva',
                 'email' => 'jhugosilva@outlook.com',
                 'address' => 'Natal/RN',
-                'description' => 'Desenvolvedor Web Full Stack com foco em Back-End, 8+ anos de experiência em PHP/Laravel e forte atuação em manutenção e evolução de sistemas legados.',
-                'summary' => 'Desenvolvedor Web Full Stack com foco em back-end e mais de 8 anos de experiência no
-                    desenvolvimento de aplicações web. Possui sólida atuação com PHP e Laravel, além de
-                    experiência com manutenção e evolução de sistemas legados.',
-                'tagline' => 'Transformando ideias em código',
+
+                // O QUE VOCÊ É (Focado em Keywords para SEO/Recrutadores)
+                'description' => 'Desenvolvedor Pleno | Especialista PHP & Laravel | Modernização de Sistemas Legados',
+
+                // QUEM VOCÊ É (A sua história e diferenciais - Texto mais fluido)
+                'summary' => 'Com mais de 8 anos de estrada no ecossistema PHP, especializei-me em transformar sistemas complexos e legados em aplicações modernas e escaláveis. Minha base sólida em Laravel e bancos de dados SQL me permite transitar entre a manutenção crítica e a criação de novas arquiteturas do zero, sempre com foco em performance e código limpo.',
+
+                // O SEU PROPÓSITO (Uma frase de impacto)
+                'tagline' => 'Construindo soluções robustas onde o código encontra a eficiência.',
+
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
+            ]
         ]);
     }
 }

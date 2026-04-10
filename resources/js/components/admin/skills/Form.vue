@@ -12,6 +12,7 @@ const form = reactive({
 const services = ref([]);
 const errors = ref([]);
 const showModal = ref(false);
+const editMode = ref(false);
 
 const disabled = ref(false);
 
@@ -32,7 +33,17 @@ const getServices = async () => {
     });
 };
 
-const handleSave = async () => {
+const handleSave = async (values, actions) => {
+    if (editMode.value) {
+        updateSkill(values, actions);
+    } else {
+        createSkill(values, actions);
+    }
+};
+
+async function createSkill(values, actions) {
+    disabled.value = true;
+
     await api
         .post("/v1/skills", form)
         .then(({ data }) => {
@@ -51,10 +62,41 @@ const handleSave = async () => {
         .finally(() => {
             disabled.value = false;
         });
-};
+}
+
+async function updateSkill(values, actions) {
+    disabled.value = true;
+    await api
+        .post(`/v1/skills/${form.id}`, form)
+        .then(({ data }) => {
+            toast.fire({
+                icon: "success",
+                title: "Skill Updated!",
+            });
+            closeModal();
+            EventBus.emit("show-skills");
+        })
+        .catch((error) => {
+            if (error.response.status === 422) {
+                errors.value = error.response.value.errors;
+            }
+        })
+        .finally(() => {
+            disabled.value = false;
+        });
+}
 
 onMounted(async () => {
     await getServices();
+});
+
+EventBus.on("show-skill-form", (skill) => {
+    showModal.value = true;
+    editMode.value = true;
+    form.id = skill.id;
+    form.service_id = skill.service_id;
+    form.name = skill.name;
+    form.proficiency = skill.proficiency;
 });
 </script>
 <template>

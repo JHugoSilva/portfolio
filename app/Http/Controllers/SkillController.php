@@ -27,4 +27,26 @@ class SkillController extends Controller
         $skill->service_id = $request->service_id;
         $skill->save();
     }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required',
+            'proficiency' => 'required',
+        ]);
+        $skill = Skill::find($id);
+        if (!$skill) {
+            return response()->json(['message' => 'Skill not found'], 404);
+        }
+        $skill->name = $request->name;
+        $skill->proficiency = $request->proficiency;
+        $skill->service_id = $request->service_id;
+        $skill->save();
+    }
+
+    public function destroy($id)
+    {
+        $skill = Skill::find($id);
+        $skill->delete();
+    }
 }

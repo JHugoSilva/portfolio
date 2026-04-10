@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from "vue";
-defineProps(["educations", "experiences"]);
+import { computed, ref } from "vue";
+const props = defineProps(["educations", "experiences"]);
 const activeTab = ref("work");
 
 const tabs = [
@@ -8,37 +8,28 @@ const tabs = [
     { id: "education", label: "Education", icon: "uil-graduation-cap" },
 ];
 
-const qualifications = {
-    education: [
-        {
-            title: "Computer Science",
-            subtitle: "Germany - University",
-            period: "2009 - 2014",
-        },
-        {
-            title: "Web Design",
-            subtitle: "Germany - Institute",
-            period: "2014 - 2017",
-        },
-    ],
-    work: [
-        {
-            title: "Software Engineer",
-            subtitle: "Apple Inc - Germany",
-            period: "2016 - 2018",
-        },
-        {
-            title: "Frontend Developer",
-            subtitle: "Apple Inc - Germany",
-            period: "2018 - 2020",
-        },
-        {
-            title: "UI Designer",
-            subtitle: "Figma - Germany",
-            period: "2017 - 2019",
-        },
-    ],
-};
+const qualifications = computed(() => {
+    return {
+        education: [
+            {
+                title: "Computer Science",
+                subtitle: "Germany - University",
+                period: "2009 - 2014",
+            },
+            {
+                title: "Web Design",
+                subtitle: "Germany - Institute",
+                period: "2014 - 2017",
+            },
+        ],
+        work:
+            props.experiences?.map((exp) => ({
+                title: exp.role,
+                subtitle: exp.company,
+                period: `Período: ${exp.start_date} - ${exp.end_date ?? "Atual"}`,
+            })) || [],
+    };
+});
 
 const setTab = (tab) => {
     activeTab.value = tab;
@@ -49,7 +40,7 @@ const setTab = (tab) => {
     <section class="qualification section">
         <h2 class="section__title">Qualification</h2>
         <span class="section__subtitle">My personal journey</span>
-        {{ educations }} -> {{ experiences }}
+
         <div class="qualification_container container">
             <!-- TABS -->
             <div class="qualification_tabs">

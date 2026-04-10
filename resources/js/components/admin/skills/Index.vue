@@ -17,6 +17,33 @@ const getSkills = async () => {
     });
 };
 
+const onEdit = (skill) => {
+    EventBus.emit("show-skill-form", skill);
+};
+
+const handleDelete = (id) => {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able ro revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            api.delete(`/v1/skills/${id}`).then(() => {
+                Swal.fire({
+                    title: "Deleted!",
+                    text: "Your file has been deleted.",
+                    icon: "success",
+                });
+                getSkills();
+            });
+        }
+    });
+};
+
 onMounted(async () => {
     await getSkills();
 });
@@ -77,10 +104,13 @@ onMounted(async () => {
                 </div>
                 <p v-if="skill.service">{{ skill.service.name }}</p>
                 <div>
-                    <button class="btn-icon success">
+                    <button class="btn-icon success" @click="onEdit(skill)">
                         <i class="fas fa-pencil-alt"></i>
                     </button>
-                    <button class="btn-icon danger">
+                    <button
+                        class="btn-icon danger"
+                        @click="handleDelete(skill.id)"
+                    >
                         <i class="far fa-trash-alt"></i>
                     </button>
                 </div>
