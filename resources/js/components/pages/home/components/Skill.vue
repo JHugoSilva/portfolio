@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 
 const props = defineProps({
     skills: {
@@ -8,54 +8,59 @@ const props = defineProps({
     },
 });
 
-// agrupar + transformar
+// 1. Agrupamento e Formatação
 const formattedSkills = computed(() => {
-    const groups = {};
-
-    props.skills.forEach((skill) => {
-        const service = skill.service;
-
-        if (!groups[service.id]) {
-            groups[service.id] = {
+    const groups = props.skills.reduce((acc, skill) => {
+        const { service } = skill;
+        if (!acc[service.id]) {
+            acc[service.id] = {
+                id: service.id,
                 title: service.name,
                 subtitle: service.description,
                 icon: service.icon || "uil-server-network",
                 items: [],
             };
         }
-
-        groups[service.id].items.push({
+        acc[service.id].items.push({
             name: skill.name,
-            percent: skill.proficiency + "%",
-            value: skill.proficiency, // pra usar no width
+            percent: skill.proficiency, // Número limpo para o :style
         });
-    });
+        return acc;
+    }, {});
 
     return Object.values(groups);
 });
 
-// controle abrir/fechar
-const activeSkills = ref([0, 1, 2, 3]);
+// 2. Controle de abas por ID (muito mais seguro que index)
+const activeSkills = ref([]);
 
-const toggleSkill = (index) => {
-    if (activeSkills.value.includes(index)) {
-        activeSkills.value = activeSkills.value.filter((i) => i !== index);
+// Opcional: Iniciar com a primeira aba aberta
+watch(
+    formattedSkills,
+    (newVal) => {
+        if (newVal.length > 0 && activeSkills.value.length === 0) {
+            activeSkills.value = newVal.map((s) => s.id);
+        }
+    },
+    { immediate: true },
+);
+
+const toggleSkill = (id) => {
+    const index = activeSkills.value.indexOf(id);
+    if (index > -1) {
+        activeSkills.value.splice(index, 1);
     } else {
-        activeSkills.value.push(index);
+        activeSkills.value.push(id);
     }
 };
 
-const leftSkills = computed(() => {
-    return formattedSkills.value.slice(
-        0,
-        Math.ceil(formattedSkills.value.length / 2),
-    );
-});
-
-const rightSkills = computed(() => {
-    return formattedSkills.value.slice(
-        Math.ceil(formattedSkills.value.length / 2),
-    );
+// 3. Divisão de Colunas
+const columns = computed(() => {
+    const half = Math.ceil(formattedSkills.value.length / 2);
+    return [
+        formattedSkills.value.slice(0, half),
+        formattedSkills.value.slice(half),
+    ];
 });
 </script>
 
@@ -63,20 +68,20 @@ const rightSkills = computed(() => {
     <section class="skills section" id="skills">
         <h2 class="section__title">Skills</h2>
         <span class="section__subtitle">My technical level</span>
+
         <div class="skills_container container grid">
-            <!-- COLUNA ESQUERDA -->
-            <div>
+            <div v-for="(column, colIndex) in columns" :key="colIndex">
                 <div
-                    v-for="(skill, index) in leftSkills"
-                    :key="index"
+                    v-for="skill in column"
+                    :key="skill.id"
                     :class="[
                         'skills_content',
-                        activeSkills.includes(index)
+                        activeSkills.includes(skill.id)
                             ? 'skills_open'
                             : 'skills_close',
                     ]"
                 >
-                    <div class="skills_header" @click="toggleSkill(index)">
+                    <div class="skills_header" @click="toggleSkill(skill.id)">
                         <i :class="['uil', skill.icon, 'skills_icon']"></i>
 
                         <div>
@@ -91,66 +96,20 @@ const rightSkills = computed(() => {
 
                     <div class="skills_list grid">
                         <div
-                            class="skills_data"
                             v-for="item in skill.items"
                             :key="item.name"
+                            class="skills_data"
                         >
                             <div class="skills_titles">
                                 <h3 class="skills_name">{{ item.name }}</h3>
-                                <span class="skills_number">{{
-                                    item.percent
-                                }}</span>
+                                <span class="skills_number"
+                                    >{{ item.percent }}%</span
+                                >
                             </div>
                             <div class="skills_bar">
                                 <span
-                                    :class="['skills_percentage', item.class]"
-                                ></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- COLUNA DIREITA -->
-            <div>
-                <div
-                    v-for="(skill, index) in rightSkills"
-                    :key="index + 2"
-                    :class="[
-                        'skills_content',
-                        activeSkills.includes(index + 2)
-                            ? 'skills_open'
-                            : 'skills_close',
-                    ]"
-                >
-                    <div class="skills_header" @click="toggleSkill(index + 2)">
-                        <i :class="['uil', skill.icon, 'skills_icon']"></i>
-
-                        <div>
-                            <h1 class="skills_title">{{ skill.title }}</h1>
-                            <span class="skills_subtitle">{{
-                                skill.subtitle
-                            }}</span>
-                        </div>
-
-                        <i class="uil uil-angle-down skills_arrow"></i>
-                    </div>
-
-                    <div class="skills_list grid">
-                        <div
-                            class="skills_data"
-                            v-for="item in skill.items"
-                            :key="item.name"
-                        >
-                            <div class="skills_titles">
-                                <h3 class="skills_name">{{ item.name }}</h3>
-                                <span class="skills_number">{{
-                                    item.percent
-                                }}</span>
-                            </div>
-                            <div class="skills_bar">
-                                <span
-                                    :class="['skills_percentage', item.class]"
+                                    class="skills_percentage"
+                                    :style="{ width: item.percent + '%' }"
                                 ></span>
                             </div>
                         </div>
@@ -165,15 +124,47 @@ const rightSkills = computed(() => {
 .skills_container {
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
+    align-items: start;
+}
+
+/* Animação de Abrir/Fechar */
+.skills_list {
+    transition: all 0.4s ease;
 }
 
 .skills_close .skills_list {
-    height: 0;
+    max-height: 0;
     overflow: hidden;
+    opacity: 0;
 }
 
 .skills_open .skills_list {
-    height: auto;
-    margin-top: 10px;
+    max-height: 1000px; /* Valor alto para permitir expansão */
+    margin-top: 1.5rem;
+    opacity: 1;
+}
+
+.skills_open .skills_arrow {
+    transform: rotate(-180deg);
+}
+
+.skills_arrow {
+    transition: 0.4s;
+    margin-left: auto;
+}
+
+.skills_percentage {
+    display: block;
+    height: 5px;
+    border-radius: 0.25rem;
+    background-color: var(--first-color); /* Troquei o red pelo seu tema */
+    transition: width 1.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+}
+
+/* Responsividade para mobile */
+@media screen and (max-width: 768px) {
+    .skills_container {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
