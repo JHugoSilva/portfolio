@@ -23,6 +23,7 @@ const counts = ref({});
 const getAbout = async () => {
     await api.get("site/about").then((response) => {
         about.value = response.data.data;
+        console.log(about.value);
     });
 };
 
@@ -57,11 +58,13 @@ const getTotais = async () => {
 };
 
 onMounted(async () => {
-    getAbout();
-    getSkills();
-    getEducations();
-    getExperiences();
-    getMedias();
+    await Promise.all([
+        getAbout(),
+        getSkills(),
+        getEducations(),
+        getExperiences(),
+        getMedias(),
+    ]);
 });
 </script>
 
@@ -77,7 +80,7 @@ onMounted(async () => {
         <Portfolio />
         <Project />
         <Testimonial />
-        <ContactMe />
+        <ContactMe :about="about" />
     </main>
     <Footer />
     <!--==================== SCROLL TOP ====================-->

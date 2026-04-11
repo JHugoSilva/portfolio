@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ServiceSeeder extends Seeder
 {
@@ -12,9 +13,9 @@ class ServiceSeeder extends Seeder
      */
     public function run(): void
     {
-        \DB::table('services')->truncate();
+        DB::table('services')->truncate();
 
-        \DB::table('services')->insert([
+        DB::table('services')->insert([
             [
                 'name' => 'Desenvolvimento Web',
                 'icon' => 'mdi-web',

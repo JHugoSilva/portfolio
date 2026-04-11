@@ -1,4 +1,18 @@
-<script setup></script>
+<script setup>
+defineProps(["about"]);
+// Função para formatar (84999999999 -> (84) 99999-9999)
+const formatPhone = (phone) => {
+    if (!phone) return "";
+    const p = phone.replace(/\D/g, ""); // Remove tudo que não é número
+
+    if (p.length === 11) {
+        return `(${p.slice(0, 2)}) ${p.slice(2, 7)}-${p.slice(7)}`;
+    } else if (p.length === 10) {
+        return `(${p.slice(0, 2)}) ${p.slice(2, 6)}-${p.slice(6)}`;
+    }
+    return phone; // Retorna original se não encaixar no padrão
+};
+</script>
 <template>
     <!--==================== CONTACT ME ====================-->
     <section class="contact section" id="contact">
@@ -8,19 +22,27 @@
         <div class="contact_container container grid">
             <div>
                 <div class="contact_information">
-                    <i class="uil uil-phone contact_icon"></i>
+                    <a
+                        :href="`https://wa.me/55${about.phone?.replace(/\D/g, '')}?text=${encodeURIComponent('Olá Hugo, vi seu portfólio e gostaria de conversar sobre um projeto!')}`"
+                        target="_blank"
+                        class="contact__container-link"
+                    >
+                        <i class="uil uil-whatsapp contact_icon"></i>
 
-                    <div>
-                        <h3 class="contact_title">Call Me</h3>
-                        <span class="contact_subtitle">444-444-444</span>
-                    </div>
+                        <div class="contact__texts">
+                            <h3 class="contact_title">WhatsApp</h3>
+                            <span class="contact_subtitle">{{
+                                formatPhone(about.phone)
+                            }}</span>
+                        </div>
+                    </a>
                 </div>
                 <div class="contact_information">
                     <i class="uil uil-envelope contact_icon"></i>
 
                     <div>
                         <h3 class="contact_title">Email</h3>
-                        <span class="contact_subtitle">johndoe@gmail.com</span>
+                        <span class="contact_subtitle">{{ about.email }}</span>
                     </div>
                 </div>
                 <div class="contact_information">
@@ -28,9 +50,9 @@
 
                     <div>
                         <h3 class="contact_title">Location</h3>
-                        <span class="contact_subtitle"
-                            >Germany-Munich Av.munich #1234</span
-                        >
+                        <span class="contact_subtitle">{{
+                            about.address
+                        }}</span>
                     </div>
                 </div>
             </div>
@@ -72,3 +94,52 @@
         </div>
     </section>
 </template>
+<style scoped>
+.contact__container-link:hover .uil-whatsapp {
+    color: #25d366; /* Verde oficial do WhatsApp */
+}
+
+/* Container que envolve o link para garantir que ele não ocupe a largura total se não necessário */
+.contact_information {
+    margin-bottom: var(--mb-2);
+}
+
+/* O link principal configurado como Flexbox */
+.contact__container-link {
+    display: flex;
+    align-items: center; /* Alinha o ícone verticalmente ao centro dos textos */
+    column-gap: 1rem; /* Espaçamento entre o ícone e o bloco de texto */
+    text-decoration: none;
+    color: inherit;
+    transition: 0.3s;
+}
+
+/* Agrupador de textos para ficarem um em cima do outro */
+.contact__texts {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.25rem; /* Espaço entre "WhatsApp" e o número */
+}
+
+/* Ajuste fino nos títulos para evitar que margens padrão quebrem o alinhamento */
+.contact_title {
+    font-size: var(--h3-font-size);
+    font-weight: var(--font-medium);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.contact_subtitle {
+    font-size: var(--small-font-size);
+    color: var(--text-color-light);
+}
+
+/* Efeito Hover profissional */
+.contact__container-link:hover {
+    transform: translateX(5px); /* Leve deslocamento lateral */
+}
+
+.contact__container-link:hover .contact_icon {
+    color: #25d366; /* Cor verde do WhatsApp no hover */
+}
+</style>

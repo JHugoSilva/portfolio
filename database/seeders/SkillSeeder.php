@@ -19,17 +19,22 @@ class SkillSeeder extends Seeder
             // Desenvolvimento Web
             [
                 'name' => 'Laravel',
+                'proficiency' => 80,
+                'service_id' => 1
+            ],
+            [
+                'name' => 'PHP',
                 'proficiency' => 90,
                 'service_id' => 1
             ],
             [
                 'name' => 'Vue.js',
-                'proficiency' => 85,
+                'proficiency' => 80,
                 'service_id' => 1
             ],
             [
                 'name' => 'React',
-                'proficiency' => 75,
+                'proficiency' => 25,
                 'service_id' => 1
             ],
 
@@ -48,19 +53,19 @@ class SkillSeeder extends Seeder
             // Mobile
             [
                 'name' => 'React Native',
-                'proficiency' => 80,
+                'proficiency' => 10,
                 'service_id' => 3
             ],
             [
                 'name' => 'Expo',
-                'proficiency' => 75,
+                'proficiency' => 15,
                 'service_id' => 3
             ],
 
             // Banco de Dados
             [
                 'name' => 'MySQL',
-                'proficiency' => 90,
+                'proficiency' => 80,
                 'service_id' => 4
             ],
             [

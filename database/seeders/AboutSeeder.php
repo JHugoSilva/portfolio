@@ -22,6 +22,8 @@ class AboutSeeder extends Seeder
                 'name' => 'Hugo Silva',
                 'email' => 'jhugosilva@outlook.com',
                 'address' => 'Natal/RN',
+                'phone' => '84991154790',
+                'email' => 'jhugosilva@outlook.com',
 
                 // O QUE VOCÊ É (Focado em Keywords para SEO/Recrutadores)
                 'description' => 'Desenvolvedor Pleno | Especialista PHP & Laravel | Modernização de Sistemas Legados',
