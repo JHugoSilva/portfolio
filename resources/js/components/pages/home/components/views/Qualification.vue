@@ -1,7 +1,10 @@
 <script setup>
 import { computed, ref } from "vue";
-const props = defineProps(["educations", "experiences"]);
 const activeTab = ref("work");
+
+import { usePortfolioInject } from "../../../../../composables/portfolio/usePortfolioInject";
+
+const { education, experiences } = usePortfolioInject();
 
 const tabs = [
     { id: "work", label: "Work", icon: "uil-briefcase-alt" },
@@ -23,7 +26,7 @@ const qualifications = computed(() => {
             },
         ],
         work:
-            props.experiences?.map((exp) => ({
+            experiences.value?.map((exp) => ({
                 title: exp.role,
                 subtitle: exp.company,
                 period: `Período: ${exp.start_date} - ${exp.end_date ?? "Atual"}`,

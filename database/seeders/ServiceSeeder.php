@@ -17,29 +17,39 @@ class ServiceSeeder extends Seeder
 
         DB::table('services')->insert([
             [
-                'name' => 'Desenvolvimento Web',
-                'icon' => 'mdi-web',
-                'description' => 'Criação de sistemas web modernos usando Laravel, Vue.js e boas práticas.'
+                'title' => 'Desenvolvimento Backend com Laravel',
+                'category' => 'Desenvolvimento de Software',
+                'description' => 'Desenvolvimento de aplicações robustas e escaláveis utilizando PHP 8 e ecossistema Laravel. Experiência avançada em refatoração de código legado e implementação de arquiteturas modernas.',
+                'technologies' => 'PHP, Laravel, Git',
+                'experience_level' => 'Sênior/Pleno',
             ],
             [
-                'name' => 'APIs REST',
-                'icon' => 'mdi-api',
-                'description' => 'Desenvolvimento de APIs escaláveis e seguras para integração de sistemas.'
+                'title' => 'Desenvolvimento e Integração de APIs RESTful',
+                'category' => 'Desenvolvimento de APIs',
+                'description' => 'Especialista na arquitetura e desenvolvimento de APIs modernas e escaláveis. Experiência sólida na criação de endpoints seguros, comunicação entre microserviços e integração com sistemas governamentais e serviços de terceiros.',
+                'technologies' => 'REST, JSON, XML, OAuth2, Webhooks, eSocial API',
+                'experience_level' => 'Especialista',
             ],
             [
-                'name' => 'Aplicações Mobile',
-                'icon' => 'mdi-cellphone',
-                'description' => 'Desenvolvimento de apps com React Native e Expo.'
+                'title' => 'Desenvolvimento de Queries Avançadas e Persistência de Dados',
+                'category' => 'Database & Backend',
+                'description' => 'Domínio em SQL avançado para otimização de performance e análise de dados complexos. Especialista na integração eficiente entre camadas de banco de dados e backend (ORM/Eloquent), garantindo integridade e velocidade em sistemas de alta volumetria.',
+                'technologies' => 'PostgreSQL, MySQL, SQL Server, Eloquent ORM, Query Optimization',
+                'experience_level' => 'Pleno/Especialista',
             ],
             [
-                'name' => 'Banco de Dados',
-                'icon' => 'mdi-database',
-                'description' => 'Modelagem e otimização de bancos de dados relacionais.'
+                'title' => 'Desenvolvimento FullStack e Interfaces',
+                'category' => 'Web Design',
+                'description' => 'Criação de interfaces dinâmicas e responsivas integrando o backend Laravel com tecnologias frontend clássicas e modernas.',
+                'technologies' => 'JavaScript, jQuery, HTML5, CSS3',
+                'experience_level' => 'Pleno',
             ],
             [
-                'name' => 'Manutenção de Sistemas',
-                'icon' => 'mdi-tools',
-                'description' => 'Correções, melhorias e refatoração de sistemas existentes.'
+                'title' => 'Consultoria Técnica e Infraestrutura VPS',
+                'category' => 'DevOps / Consultoria',
+                'description' => 'Configuração de servidores VPS para hospedagem, suporte técnico especializado e deploy de aplicações.',
+                'technologies' => 'VPS, Linux, Deployment, Git',
+                'experience_level' => 'Intermediário',
             ],
         ]);
     }

@@ -1,16 +1,20 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
 
-const props = defineProps({
-    skills: {
-        type: Array,
-        default: () => [],
-    },
-});
+// const props = defineProps({
+//     skills: {
+//         type: Array,
+//         default: () => [],
+//     },
+// });
+
+import { usePortfolioInject } from "../../../../../composables/portfolio/usePortfolioInject";
+
+const { skills } = usePortfolioInject();
 
 // 1. Agrupamento e Formatação
 const formattedSkills = computed(() => {
-    const groups = props.skills.reduce((acc, skill) => {
+    const groups = skills.value.reduce((acc, skill) => {
         const { service } = skill;
         if (!acc[service.id]) {
             acc[service.id] = {

@@ -1,19 +1,7 @@
 <script setup>
-defineProps(["about"]);
-const getHomeImage = (img) => {
-    if (img) {
-        return "/upload/" + img;
-    } else {
-        return "/template/assets/img/avatar.jpg";
-    }
-};
-const getCvDownload = (cv) => {
-    if (cv) {
-        return "/upload/" + cv;
-    } else {
-        return null;
-    }
-};
+import { usePortfolioInject } from "../../../../../composables/portfolio/usePortfolioInject";
+
+const { about } = usePortfolioInject();
 </script>
 <template>
     <!--==================== ABOUT ====================-->
@@ -37,21 +25,21 @@ const getCvDownload = (cv) => {
                 <div class="about_info">
                     <div>
                         <span class="about_info-title">08+</span>
-                        <span class="about_info-name"
-                            >Years <br />experience</span
-                        >
+                        <span class="about_info-name">
+                            Anos de <br />experiência
+                        </span>
                     </div>
                     <div>
-                        <span class="about_info-title">25+</span>
+                        <span class="about_info-title">12+</span>
                         <span class="about_info-name"
-                            >Completed <br />project</span
+                            >Projetos <br />completos</span
                         >
                     </div>
                     <div>
                         <span class="about_info-title">04+</span>
-                        <span class="about_info-name"
-                            >Companies <br />worked</span
-                        >
+                        <span class="about_info-name">
+                            Empresas <br />onde trabalhei
+                        </span>
                     </div>
                 </div>
                 <div class="about_buttons">

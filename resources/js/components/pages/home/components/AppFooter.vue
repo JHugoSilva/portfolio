@@ -1,11 +1,15 @@
-<script setup></script>
+<script setup>
+import { usePortfolioInject } from "../../../../composables/portfolio/usePortfolioInject";
+
+const { about } = usePortfolioInject();
+</script>
 <template>
     <!--==================== FOOTER ====================-->
     <footer class="footer">
         <div class="footer_bg">
             <div class="footer_container container grid">
                 <div>
-                    <h1 class="footer_title">John Doe</h1>
+                    <h1 class="footer_title">{{ about.name }}</h1>
                     <span class="footer_subtitle">FullStack Web developer</span>
                     <p class="footer_subtitle">
                         High level experience in web design, front-end and

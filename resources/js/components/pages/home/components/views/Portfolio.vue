@@ -5,6 +5,12 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const loadView = () => {
+    router.push({ name: "study" });
+};
 
 onMounted(() => {
     new Swiper(".portfolio_container", {
@@ -50,6 +56,7 @@ onMounted(() => {
                         </p>
                         <a
                             href="#"
+                            @click.prevent="loadView"
                             class="button button--flex button--small portfolio_button"
                         >
                             Demo

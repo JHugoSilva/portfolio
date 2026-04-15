@@ -1,5 +1,7 @@
 <script setup>
-defineProps(["about", "medias"]);
+import { usePortfolioInject } from "../../../../../composables/portfolio/usePortfolioInject";
+
+const { about, medias } = usePortfolioInject();
 </script>
 
 <template>
@@ -9,7 +11,6 @@ defineProps(["about", "medias"]);
             <div class="home_img">
                 <img :src="about?.home_image" alt="Home Image" />
             </div>
-            <!-- {{ about }} -->
             <div class="home_data">
                 <h1 class="home_title">Olá, eu sou {{ about.name }}</h1>
                 <h3 class="home_subtitle">{{ about.tagline }}</h3>

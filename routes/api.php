@@ -53,6 +53,9 @@ Route::prefix('site')->group(function () {
     Route::controller(MediaController::class)->group(function () {
         Route::get('medias', 'index');
     });
+    Route::controller(ServiceController::class)->group(function () {
+        Route::get('services', 'index');
+    });
 });
 
 Route::middleware('auth:sanctum')->group(function () {

@@ -9,7 +9,7 @@ class ServiceController extends Controller
 {
     public function index()
     {
-        $services = Service::latest()->get();
+        $services = Service::select('title', 'category', 'description')->latest()->get();
         return response()->json([
             'services' => $services
         ], 200);

@@ -1,5 +1,7 @@
 <script setup>
-defineProps(["about"]);
+import { usePortfolioInject } from "../../../../../composables/portfolio/usePortfolioInject";
+
+const { about } = usePortfolioInject();
 // Função para formatar (84999999999 -> (84) 99999-9999)
 const formatPhone = (phone) => {
     if (!phone) return "";
