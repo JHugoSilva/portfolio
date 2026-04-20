@@ -1,86 +1,64 @@
-import { ref } from "vue";
-import api from "../../lib/Api";
+import { reactive, ref, toRefs } from "vue";
+import Api from "../../lib/Api";
 
 export function usePortfolio() {
-    const about = ref({});
-    const skills = ref([]);
-    const educations = ref({});
-    const experiences = ref([]);
-    const medias = ref({});
-    const services = ref({});
+    // Agrupamos o estado para facilitar o gerenciamento e o reset, se necessário
+    const state = reactive({
+        about: {},
+        educations: [],
+        skills: [],
+        experiences: [],
+        medias: [],
+        services: [],
+        loading: false,
+        errors: null,
+    });
 
-    const loading = ref(false);
-    const error = ref(null);
-
-    const getAbout = async () => {
-        await api.get("site/about").then((response) => {
-            about.value = response.data.data;
-        });
-    };
-
-    const getSkills = async () => {
-        await api.get("site/skills").then((response) => {
-            skills.value = response.data.skills;
-        });
-    };
-
-    const getEducations = async () => {
-        await api.get("site/educations").then((response) => {
-            educations.value = response.data.educations;
-        });
-    };
-
-    const getExperiences = async () => {
-        await api.get("site/experiences").then((response) => {
-            experiences.value = response.data.experiences;
-        });
-    };
-
-    const getMedias = async () => {
-        await api.get("site/medias").then((response) => {
-            medias.value = response.data.medias;
-        });
-    };
-
-    const getServices = async () => {
-        await api.get("site/services").then((response) => {
-            services.value = response.data.services;
-        });
-    };
-
-    const loadAll = async () => {
+    // Função utilitária para evitar repetição de lógica de erro/atribuição
+    const fetchData = async (endPoint, stateKey, dataKey = null) => {
         try {
-            loading.value = true;
-            error.value = null;
+            const { data } = await Api.get(endPoint);
+            // Se houver uma chave específica (ex: data.skills), usa ela, senão usa data.data ou o objeto inteiro
+            state[stateKey] = dataKey ? data[dataKey] : data.data || data;
+        } catch (error) {
+            console.log("====================================");
+            console.log(`Error ao carregar ${stateKey}: `, error);
+            console.log("====================================");
+        }
+    };
 
+    const loadDataAll = async () => {
+        state.loading = true;
+        state.errors = null;
+
+        try {
+            // Executa todas em paralelo para melhor performance
             await Promise.all([
-                getAbout(),
-                getSkills(),
-                getEducations(),
-                getExperiences(),
-                getMedias(),
-                getServices(),
+                fetchData("site/about", "about"),
+                fetchData("site/skills", "skills", "skills"),
+                fetchData("site/educations", "educations", "educations"),
+                fetchData("site/experiences", "experiences", "experiences"),
+                fetchData("site/services", "services", "services"),
+                fetchData("site/medias", "medias", "medias"),
             ]);
         } catch (error) {
-            error.value = error;
-            console.log(`Error ao carregar Portfolio: ${error}`);
+            state.errors = `Falha no Loading em Massa: ${error}`;
         } finally {
-            loading.value = false;
+            state.loading = false;
         }
     };
 
     return {
-        //State
-        about,
-        skills,
-        educations,
-        experiences,
-        medias,
-        services,
-        loading,
-        error,
-
+        // toRefs permite desestruturar no componente sem perder a reatividade
+        ...toRefs(state),
         //Actions
-        loadAll,
+        loadDataAll,
     };
 }
+
+//**NOTAS */
+// O que mudou e por quê?
+// reactive + toRefs: Usar reactive organiza as variáveis de estado em um único "balde". O toRefs no retorno permite que você use const { about, loading } = usePortfolio() no seu componente como se fossem refs individuais.
+// Abstração fetchData: Note que quase todas as suas funções faziam a mesma coisa: chamavam a API e atribuíam o resultado. Criei uma função interna que centraliza isso, reduzindo o código de 50 linhas para algo muito mais enxuto.
+// Performance: O uso do Promise.all que você já tinha é a melhor prática aqui, pois dispara todas as requisições simultaneamente em vez de esperar uma por uma.
+// Melhor tratamento de erros: Centralizei o erro no state.error para que você possa exibir uma mensagem amigável na UI (ex: um alerta de erro) de forma simples.

@@ -1,5 +1,5 @@
 <script setup>
-import { usePortfolioInject } from "../../../../../composables/portfolio/usePortfolioInject";
+import { usePortfolioInject } from "@/composables/portfolio/usePortfolioInject";
 
 const { about, medias } = usePortfolioInject();
 </script>
@@ -48,7 +48,7 @@ const { about, medias } = usePortfolioInject();
                             <i class="uil uil-arrow-down home_scroll-arrow"></i>
                         </a>
                     </div>
-                    <!-- {{ medias }} -->
+                    {{ medias.value }}
                     <div class="home_social1">
                         <div
                             class="home_social-links"

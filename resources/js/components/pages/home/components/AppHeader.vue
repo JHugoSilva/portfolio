@@ -1,28 +1,40 @@
 <script setup>
 import { nextTick, onMounted, onUnmounted, ref } from "vue";
-import { useTheme } from "../../../../lib/useTheme";
-const { initTheme } = useTheme("theme-button");
+import { useTheme } from "@/lib/useTheme";
+const { initTheme, toggleTheme } = useTheme("theme-button");
 
 const activeSection = ref("home");
 const showMenu = ref(false);
+const isVisible = ref(false);
 
-import { usePortfolioInject } from "../../../../composables/portfolio/usePortfolioInject";
+import { usePortfolioInject } from "@/composables/portfolio/usePortfolioInject";
 
 const { about } = usePortfolioInject();
 
-const toggleMenu = () => (showMenu.value = !showMenu.value);
-const closeMenu = () => (showMenu.value = false);
+const toggleMenu = () => {
+    console.log("Clique detetado! Estado anterior:", showMenu.value);
+    showMenu.value = !showMenu.value;
+    console.log("Estado atual:", showMenu.value);
+};
+
+const closeMenu = () => {
+    console.log("Fechando...");
+    showMenu.value = false;
+};
 
 // Função para detectar qual seção está visível
-const scrollActive = () => {
-    const sections = document.querySelectorAll("section[id]");
+const handleAllScrolls = () => {
     const scrollY = window.pageYOffset;
 
+    // 1. Lógica do Scroll Up (Botão flutuante)
+    isVisible.value = scrollY >= 560;
+
+    // 2. Lógica de Scroll Active (Menu dinâmico)
+    const sections = document.querySelectorAll("section[id]");
     sections.forEach((current) => {
         const sectionHeight = current.offsetHeight;
         const sectionTop = current.offsetTop - 150; // Offset para detectar antes de chegar no topo
         const sectionId = current.getAttribute("id");
-
         if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
             activeSection.value = sectionId;
         }
@@ -30,21 +42,36 @@ const scrollActive = () => {
 };
 
 onMounted(async () => {
+    // Aguarda o DOM renderizar completamente
     await nextTick();
-    initTheme();
+    // Inicializa o tema (se houver essa função)
+    if (typeof initTheme === "function") initTheme();
 
-    window.addEventListener("scroll", scrollActive);
+    // Registra um único event listener para ambos
+    window.addEventListener("scroll", handleAllScrolls);
+
+    // Executa uma vez no início para definir o estado inicial
+    handleAllScrolls();
 });
 
 onUnmounted(() => {
-    window.removeEventListener("scroll", scrollActive);
+    // Limpa o listener ao destruir o componente
+    window.removeEventListener("scroll", handleAllScrolls);
 });
+
+const navLinks = [
+    { name: "Início", hash: "#home", icon: "estate" },
+    { name: "Sobre", hash: "#about", icon: "user" },
+    { name: "Habilidades", hash: "#skills", icon: "file-alt" },
+    { name: "Serviços", hash: "#services", icon: "briefcase-alt" },
+    { name: "Qualificações", hash: "#qualification", icon: "graduation-cap" },
+    { name: "Contato", hash: "#contact", icon: "scenery" },
+];
 </script>
 <template>
-    <!--==================== HEADER ====================-->
     <header class="header" id="header">
         <nav class="nav container">
-            <router-link :to="{ name: 'home', hash: '#home' }" class="nav_logo">
+            <router-link :to="{ name: 'home' }" class="nav_logo">
                 {{ about.name }}
             </router-link>
 
@@ -54,109 +81,65 @@ onUnmounted(() => {
                 id="nav-menu"
             >
                 <ul class="nav_list grid">
-                    <li class="nav-item">
-                        <router-link
-                            :to="{ name: 'home', hash: '#home' }"
-                            class="link"
-                            :class="{
-                                nav_link: activeSection === 'home',
-                            }"
+                    <li v-for="link in navLinks" :key="link.hash">
+                        <a
+                            :href="link.hash"
                             @click="closeMenu"
+                            :class="[
+                                'nav_link',
+                                {
+                                    'active-link':
+                                        activeSection ===
+                                        link.hash.replace('#', ''),
+                                },
+                            ]"
                         >
-                            <i class="uil uil-estate nav_icon"></i> Home
-                        </router-link>
+                            <i :class="`uil uil-${link.icon} nav_icon`"></i>
+                            {{ link.name }}
+                        </a>
                     </li>
-
-                    <li class="nav-item">
-                        <router-link
-                            :to="{ name: 'home', hash: '#about' }"
-                            class="link"
-                            :class="{
-                                nav_link: activeSection === 'about',
-                            }"
-                            @click="closeMenu"
-                        >
-                            <i class="uil uil-user nav_icon"></i> About
-                        </router-link>
-                    </li>
-
-                    <li class="nav-item">
-                        <router-link
-                            :to="{ name: 'home', hash: '#skills' }"
-                            class="link"
-                            :class="{
-                                nav_link: activeSection === 'skills',
-                            }"
-                            @click="closeMenu"
-                        >
-                            <i class="uil uil-file-alt nav_icon"></i> Skills
-                        </router-link>
-                    </li>
-
-                    <li class="nav-item">
-                        <router-link
-                            :to="{ name: 'home', hash: '#services' }"
-                            class="link"
-                            :class="{
-                                nav_link: activeSection === 'services',
-                            }"
-                            @click="closeMenu"
-                        >
-                            <i class="uil uil-briefcase-alt nav_icon"></i>
-                            Services
-                        </router-link>
-                    </li>
-
-                    <li class="nav-item">
-                        <router-link
-                            :to="{ name: 'home', hash: '#portfolio' }"
-                            class="link"
-                            :class="{
-                                nav_link: activeSection === 'portfolio',
-                            }"
-                            @click="closeMenu"
-                        >
-                            <i class="uil uil-scenery nav_icon"></i> Portfolio
-                        </router-link>
-                    </li>
-
-                    <li class="nav-item">
-                        <router-link
-                            :to="{ name: 'home', hash: '#contact' }"
-                            class="link"
-                            :class="{
-                                nav_link: activeSection === 'contact',
-                            }"
-                            @click="closeMenu"
-                        >
-                            <i class="uil uil-message nav_icon"></i> Contact
-                        </router-link>
-                    </li>
-                    <li class="nav-item">
+                    <div>
                         <i
                             class="uil uil-moon change-theme"
-                            id="theme-button"
-                            ref="themeButton"
-                            style="cursor: pointer"
                             @click="toggleTheme"
+                            style="cursor: pointer"
                         ></i>
-                    </li>
+                    </div>
                 </ul>
                 <i
                     class="uil uil-times nav_close"
-                    id="nav-close"
+                    id="nav_close"
                     @click="closeMenu"
                 ></i>
             </div>
 
             <div class="nav_btns">
-                <i class="uil uil-moon change-theme" id="theme-button"></i>
+                <i
+                    class="uil uil-moon change-theme"
+                    @click="toggleTheme"
+                    style="cursor: pointer"
+                ></i>
+
                 <div class="nav_toggle" id="nav-toggle" @click="toggleMenu">
-                    <i class="uil uil-apps"></i>
+                    <i class="uil uil-bars"></i>
                 </div>
             </div>
+            <!-- <button
+                @click="toggleMenu"
+                style="position: fixed; top: 10px; left: 10px; z-index: 9999"
+            >
+                DEBUG MENU: {{ showMenu }}
+            </button> -->
         </nav>
     </header>
+
+    <a
+        href="#"
+        :class="['scrollup', { 'show-scroll': isVisible }]"
+        id="scroll-up"
+    >
+        <i class="uil uil-arrow-up scrollup_icon"></i>
+    </a>
 </template>
 <style scoped>
 /* default = desktop */
@@ -164,11 +147,8 @@ onUnmounted(() => {
     display: none;
 }
 
-/* mobile */
-@media (max-width: 768px) {
-    .nav_btns {
-        display: flex;
-    }
+.nav_icon {
+    display: inline-block;
 }
 
 html {
@@ -206,6 +186,37 @@ html {
     animation: slideIn 0.3s ease-out;
 }
 
+/* Estado Base: Escondido */
+.scrollup {
+    position: fixed;
+    right: 1rem;
+    bottom: -20%; /* Começa fora da tela */
+    background-color: var(
+        --first-color
+    ); /* Certifique-se que essa variável existe */
+    opacity: 0.8;
+    padding: 0.9rem;
+    border-radius: 0.4rem;
+    z-index: var(--z-tooltip); /* Garanta que seja alto, ex: 100 */
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+.scrollup:hover {
+    background-color: var(--first-color-alt);
+    opacity: 1;
+}
+
+.scrollup_icon {
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+/* Estado Ativo: Visível */
+.show-scroll {
+    bottom: 5rem; /* Sobe para aparecer na tela */
+}
+
 /* Pequena animação de entrada */
 @keyframes slideIn {
     from {
@@ -215,6 +226,26 @@ html {
     to {
         transform: scaleX(1);
         opacity: 1;
+    }
+}
+
+/* Mobile */
+@media screen and (max-width: 767px) {
+    .nav_btns {
+        display: flex;
+    }
+
+    div#nav-menu.nav_menu {
+        position: fixed;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform: translateY(100%);
+        transition: transform 0.3s;
+    }
+
+    div#nav-menu.nav_menu.show-menu {
+        transform: translateY(0);
     }
 }
 </style>

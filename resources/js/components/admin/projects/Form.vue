@@ -1,159 +1,129 @@
 <script setup>
-import { onMounted, reactive, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import api from "../../../lib/Api";
+import { useProject } from "@/composables/projects/useProjects";
+import { QuillEditor } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 
-const router = useRouter();
-const route = useRoute();
-
-const errors = ref([]);
-const editMode = ref(false);
-
-const form = reactive({
-    title: "",
-    description: "",
-    link: "",
-    image: "",
-});
-
-const handleSave = async (values, actions) => {
-    if (editMode.value) {
-        updateProject(values, actions);
-    } else {
-        createProject(values, actions);
-    }
-};
-
-const createProject = async (values, actions) => {
-    const formData = new FormData();
-    formData.append("title", form.title);
-    formData.append("description", form.description);
-    formData.append("link", form.link);
-    formData.append("image", form.image);
-
-    await api
-        .post("/v1/projects", formData)
-        .then(({ data }) => {
-            router.push("/admin/projects");
-            toast.fire({
-                icon: "success",
-                title: "Project Added!",
-            });
-        })
-        .catch((error) => {
-            if (error.response.status === 422) {
-                errors.value = error.response.data.errors;
-            }
-        });
-};
-
-const updateProject = async (values, actions) => {
-    const formData = new FormData();
-    formData.append("title", form.title);
-    formData.append("description", form.description);
-    formData.append("link", form.link);
-    formData.append("image", form.image);
-
-    await api
-        .post(`/v1/projects/${route.params.id}`, formData)
-        .then(({ data }) => {
-            router.push("/admin/projects");
-            toast.fire({
-                icon: "success",
-                title: "Project Updated!",
-            });
-        })
-        .catch((error) => {
-            if (error.response.status === 422) {
-                errors.value = error.response.data.errors;
-            }
-        });
-};
-
-const ourImage = () => {
-    if (form.image) {
-        return "/upload/" + form.image;
-    } else {
-        return "/template/assets/img/no-image.png";
-    }
-};
-
-const handleFileChange = (e) => {
-    form.image = e.target.files[0];
-    let reader = new FileReader();
-    reader.onload = () => {
-        let output = document.getElementById("projects-img");
-        output.src = reader.result;
-    };
-    reader.readAsDataURL(e.target.files[0]);
-};
-
-const getProject = async () => {
-    await api.get(`/v1/projects/${route.params.id}`).then(({ data }) => {
-        form.title = data.project.title;
-        form.description = data.project.description;
-        form.link = data.project.link;
-        form.image = data.project.image;
-    });
-};
-
-onMounted(() => {
-    if (route.name === "admin.projects.edit") {
-        editMode.value = true;
-    }
-    getProject();
-});
+const {
+    form,
+    errors,
+    editMode,
+    getImagePreview,
+    handleFileChange,
+    persistData,
+} = useProject();
 </script>
 <template>
     <!--===================ADD PROJECT ====================-->
     <section class="about" id="project">
         <div class="titlebar">
             <h1>
-                <span v-if="editMode">Edit</span>
-                <span v-else>Create</span>
-                Project
+                <span v-if="editMode">Editar</span>
+                <span v-else>Criar</span>
+                Projeto
             </h1>
-            <button @click="handleSave">Save Project</button>
+            <button @click="persistData" class="btn-save">
+                Salvar Projeto
+            </button>
         </div>
+
         <div class="card-wrapper">
             <div class="wrapper_left">
                 <div class="card">
-                    <label>Title</label>
-                    <span style="color: red" v-if="errors.title">{{
+                    <label>Título</label>
+                    <span style="color: red" v-if="errors?.title">{{
                         errors.title
                     }}</span>
-                    <input type="text" v-model="form.title" />
-
-                    <label>Description</label>
-                    <span style="color: red" v-if="errors.description">{{
-                        errors.description
+                    <input
+                        type="text"
+                        v-model="form.title"
+                        placeholder="Ex: E-commerce App"
+                    />
+                    <label>Categoria</label>
+                    <span style="color: red" v-if="errors?.category">{{
+                        errors.category
                     }}</span>
-                    <textarea
-                        cols="10"
-                        rows="5"
-                        v-model="form.description"
-                    ></textarea>
+                    <input
+                        type="text"
+                        v-model="form.category"
+                        placeholder="Ex: Web Design / Backend"
+                    />
 
-                    <label>Link</label>
-                    <input type="text" v-model="form.link" />
+                    <label>Data</label>
+                    <input
+                        type="text"
+                        v-model="form.date"
+                        placeholder="Ex: Outubro, 2023"
+                    />
+
+                    <label>URL do Vídeo (YouTube Embed)</label>
+                    <input
+                        type="text"
+                        v-model="form.videoUrl"
+                        placeholder="https://www.youtube.com/embed/..."
+                    />
+
+                    <label>Link do Projeto (Online)</label>
+                    <input
+                        type="text"
+                        v-model="form.projectLink"
+                        placeholder="https://seuprojeto.com"
+                    />
+
+                    <label>Descrição Detalhada</label>
+                    <span style="color: red" v-if="errors.longDescription">{{
+                        errors.longDescription
+                    }}</span>
+                    <QuillEditor
+                        theme="snow"
+                        v-model:content="form.longDescription"
+                        contentType="html"
+                        toolbar="essential"
+                    />
                 </div>
             </div>
 
             <div class="wrapper_right">
                 <div class="card">
+                    <label>Thumbnail / Imagem de Capa</label>
                     <img
-                        :src="ourImage()"
+                        :src="getImagePreview()"
                         id="projects-img"
-                        alt=""
+                        alt="Preview"
                         class="project_img"
                     />
                     <input type="file" @change="handleFileChange" />
+                    <p class="info-text">
+                        Esta imagem aparecerá na listagem principal.
+                    </p>
                 </div>
             </div>
         </div>
-        <div class="titlebar">
-            <h1></h1>
-            <button @click="handleSave">Save Project</button>
+
+        <div class="titlebar" style="margin-top: 2rem">
+            <div class="spacer"></div>
+            <button @click="handleSave" class="btn-save">Salvar Projeto</button>
         </div>
     </section>
 </template>
+<style scoped>
+.editor-container {
+    background-color: white;
+    margin-bottom: 1.5rem;
+}
+
+:deep(.ql-editor) {
+    min-height: 200px; /* Garante um espaço bom para digitar */
+    font-size: 1rem;
+}
+
+:deep(.ql-toolbar) {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+:deep(.ql-container) {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+</style>

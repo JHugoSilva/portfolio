@@ -1,4 +1,11 @@
-<script setup></script>
+<script setup>
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const loadView = () => {
+    router.push({ name: "study" });
+};
+</script>
 <template>
     <!--==================== PROJECT IN MIND ====================-->
     <section class="project section">
@@ -11,6 +18,7 @@
                     </p>
                     <a
                         href="#contact"
+                        @click.prevent="loadView"
                         class="button button--flex button--white"
                     >
                         Contact Me

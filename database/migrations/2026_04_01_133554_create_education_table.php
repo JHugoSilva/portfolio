@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('education', function (Blueprint $table) {
+        Schema::create('educations', function (Blueprint $table) {
             $table->id();
-            $table->string('institution')->nullable();
-            $table->string('period')->nullable();
-            $table->string('degree')->nullable();
-            $table->string('departement')->nullable();
+            $table->string('institution');    // IMD, Anhanguera, etc.
+            $table->string('degree');         // ADS, Técnico em TI, etc.
+            $table->text('description')->nullable();
+            $table->date('start_date');
+            $table->date('end_date')->nullable();    // Null significa "Em andamento"
+            $table->boolean('is_current')->default(false); // Reforça se é atual
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('education');
+        Schema::dropIfExists('educations');
     }
 };

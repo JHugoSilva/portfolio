@@ -2,31 +2,25 @@
 import { computed, ref } from "vue";
 const activeTab = ref("work");
 
-import { usePortfolioInject } from "../../../../../composables/portfolio/usePortfolioInject";
+import { usePortfolioInject } from "@/composables/portfolio/usePortfolioInject";
 
-const { education, experiences } = usePortfolioInject();
+const { educations, experiences } = usePortfolioInject();
 
 const tabs = [
-    { id: "work", label: "Work", icon: "uil-briefcase-alt" },
-    { id: "education", label: "Education", icon: "uil-graduation-cap" },
+    { id: "work", label: "Trabalhos", icon: "uil-briefcase-alt" },
+    { id: "education", label: "Educação", icon: "uil-graduation-cap" },
 ];
 
 const qualifications = computed(() => {
     return {
-        education: [
-            {
-                title: "Computer Science",
-                subtitle: "Germany - University",
-                period: "2009 - 2014",
-            },
-            {
-                title: "Web Design",
-                subtitle: "Germany - Institute",
-                period: "2014 - 2017",
-            },
-        ],
+        education:
+            educations?.value.map((edu) => ({
+                title: edu.institution,
+                subtitle: edu.degree,
+                period: `Período: ${edu.start_date} - ${edu.end_date ?? "Atual"}`,
+            })) || [],
         work:
-            experiences.value?.map((exp) => ({
+            experiences?.value.map((exp) => ({
                 title: exp.role,
                 subtitle: exp.company,
                 period: `Período: ${exp.start_date} - ${exp.end_date ?? "Atual"}`,
@@ -41,8 +35,8 @@ const setTab = (tab) => {
 
 <template>
     <section class="qualification section">
-        <h2 class="section__title">Qualification</h2>
-        <span class="section__subtitle">My personal journey</span>
+        <h2 class="section__title">Qualificação</h2>
+        <span class="section__subtitle">Minha jornada pessoal</span>
 
         <div class="qualification_container container">
             <!-- TABS -->

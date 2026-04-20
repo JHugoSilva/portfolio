@@ -1,5 +1,5 @@
 <script setup>
-import { usePortfolioInject } from "../../../../composables/portfolio/usePortfolioInject";
+import { usePortfolioInject } from "@/composables/portfolio/usePortfolioInject";
 
 const { about } = usePortfolioInject();
 </script>

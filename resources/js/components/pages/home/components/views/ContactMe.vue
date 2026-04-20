@@ -1,7 +1,12 @@
 <script setup>
-import { usePortfolioInject } from "../../../../../composables/portfolio/usePortfolioInject";
+import { usePortfolioInject } from "@/composables/portfolio/usePortfolioInject";
 
 const { about } = usePortfolioInject();
+import { useVuelidate } from "@vuelidate/core";
+import { required, email } from "@vuelidate/validators";
+import { reactive, ref } from "vue";
+import BaseInput from "../../../../bases/BaseInput.vue";
+import Api from "../../../../../lib/Api";
 // Função para formatar (84999999999 -> (84) 99999-9999)
 const formatPhone = (phone) => {
     if (!phone) return "";
@@ -14,12 +19,61 @@ const formatPhone = (phone) => {
     }
     return phone; // Retorna original se não encaixar no padrão
 };
+
+const loading = ref(false);
+
+// 1. Estado dos dados do formulário
+const formData = reactive({
+    nome: "",
+    email: "",
+    telefone: "",
+    projeto: "",
+    descricao: "",
+});
+
+// 2. Regras de validação
+const rules = {
+    nome: { required },
+    email: { required, email },
+    assunto: { required },
+    mensagem: { required },
+};
+
+const v$ = useVuelidate(rules, formData);
+
+// 3. Função de envio
+const submitForm = async () => {
+    const result = await v$.value.$validate();
+
+    if (!result) return;
+    try {
+        loading.value = true;
+        const response = await Api.post("/site/contato", formData);
+
+        // Limpa o formulário após o sucesso
+        Object.assign(formData, {
+            nome: "",
+            email: "",
+            telefone: "",
+            assunto: "",
+            mensagem: "",
+        });
+        v$.value.$reset();
+
+        alert("Mensagem enviada com sucesso!");
+    } catch (error) {
+        console.error("Erro ao enviar:", error);
+        alert("Ocorreu um erro ao enviar a mensagem.");
+    } finally {
+        loading.value = false;
+    }
+};
 </script>
 <template>
     <!--==================== CONTACT ME ====================-->
     <section class="contact section" id="contact">
-        <h2 class="section__title">Contact Me</h2>
-        <span class="section__subtitle">Get in touch</span>
+        <h2 class="section__title">Entre em contato comigo</h2>
+        <span class="section__subtitle">Fale comigo </span>
 
         <div class="contact_container container grid">
             <div>
@@ -31,7 +85,7 @@ const formatPhone = (phone) => {
                     >
                         <i class="uil uil-whatsapp contact_icon"></i>
 
-                        <div class="contact__texts">
+                        <div>
                             <h3 class="contact_title">WhatsApp</h3>
                             <span class="contact_subtitle">{{
                                 formatPhone(about.phone)
@@ -40,11 +94,19 @@ const formatPhone = (phone) => {
                     </a>
                 </div>
                 <div class="contact_information">
-                    <i class="uil uil-envelope contact_icon"></i>
-
                     <div>
-                        <h3 class="contact_title">Email</h3>
-                        <span class="contact_subtitle">{{ about.email }}</span>
+                        <a
+                            class="contact__container-link"
+                            :href="`mailto:${about.email}`"
+                        >
+                            <i class="uil uil-envelope contact_icon"></i>
+                            <div>
+                                <h3 class="contact_title">Email</h3>
+                                <span class="contact_subtitle">
+                                    {{ about.email }}
+                                </span>
+                            </div>
+                        </a>
                     </div>
                 </div>
                 <div class="contact_information">
@@ -59,38 +121,48 @@ const formatPhone = (phone) => {
                 </div>
             </div>
 
-            <form action="" class="contact_form grid">
+            <form @submit.prevent="submitForm" class="contact_form grid">
                 <div class="contact_inputs grid">
-                    <div class="contact_content">
-                        <label for="" class="contact_label">Name</label>
-                        <input type="text" class="contact_input" />
+                    <BaseInput
+                        label="Nome"
+                        v-model="formData.nome"
+                        :hasError="v$.nome.$error"
+                        errorMessage="Nome é obrigatório"
+                    />
+
+                    <BaseInput
+                        label="Email"
+                        v-model="formData.email"
+                        :hasError="v$.email.$error"
+                        errorMessage="Email é obrigatório"
+                    />
+
+                    <BaseInput label="Telefone" v-model="formData.telefone" />
+
+                    <BaseInput
+                        label="Projeto"
+                        v-model="formData.assunto"
+                        :hasError="v$.assunto.$error"
+                        errorMessage="Título do projeto é obrigatório"
+                    />
+
+                    <BaseInput
+                        type="textarea"
+                        label="Descrição do projeto"
+                        v-model="formData.mensagem"
+                        :hasError="v$.mensagem.$error"
+                        errorMessage="Descrição do projeto é obrigatório"
+                    />
+                    <div>
+                        <button
+                            type="submit"
+                            class="button button--flex"
+                            style="border: none"
+                        >
+                            Send Message
+                            <i class="uil uil-message button_icon"></i>
+                        </button>
                     </div>
-                    <div class="contact_content">
-                        <label for="" class="contact_label">Email</label>
-                        <input type="email" class="contact_input" />
-                    </div>
-                </div>
-                <div class="contact_content">
-                    <label for="" class="contact_label">Project</label>
-                    <input type="tetx" class="contact_input" />
-                </div>
-                <div class="contact_content">
-                    <label for="" class="contact_label"
-                        >Project description</label
-                    >
-                    <textarea
-                        name=""
-                        id=""
-                        cols="0"
-                        rows="7"
-                        class="contact_input"
-                    ></textarea>
-                </div>
-                <div>
-                    <a href="#" class="button button--flex">
-                        Send Message
-                        <i class="uil uil-message button_icon"></i>
-                    </a>
                 </div>
             </form>
         </div>
@@ -110,7 +182,7 @@ const formatPhone = (phone) => {
 .contact__container-link {
     display: flex;
     align-items: center; /* Alinha o ícone verticalmente ao centro dos textos */
-    column-gap: 1rem; /* Espaçamento entre o ícone e o bloco de texto */
+    column-gap: 0.2rem; /* Espaçamento entre o ícone e o bloco de texto */
     text-decoration: none;
     color: inherit;
     transition: 0.3s;

@@ -6,5 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Education extends Model
 {
-    protected $table = 'education';
+    protected $table = 'educations';
+
+    protected $fillable = [
+        'institution',
+        'degree',
+        'description',
+        'start_date',
+        'end_date',
+        'is_current'
+    ];
 }

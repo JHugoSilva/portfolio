@@ -10,7 +10,7 @@ class ProjectController extends Controller
 
     public function index()
     {
-        $projects = Project::paginate(1);
+        $projects = Project::paginate(5);
         return response()->json([
             'projects' => $projects
         ]);
@@ -38,14 +38,18 @@ class ProjectController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'title' => 'required',
-            'description' => 'required'
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'longDescription' => 'nullable|string',
+            'category' => 'nullable|string',
+            'date' => 'nullable|string',
+            'videoUrl' => 'nullable|string',
+            'projectLink' => 'nullable|string',
         ]);
+
         $project = Project::find($id);
-        $project->title = $request->title;
-        $project->description = $request->description;
-        $project->link = $request->link;
+        /** @var \App\Models\Project $project */
+        $project->fill($validated);
 
         if ($project->image != $request->image) {
 

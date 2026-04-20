@@ -1,34 +1,41 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
 
-// const props = defineProps({
-//     skills: {
-//         type: Array,
-//         default: () => [],
-//     },
-// });
-
-import { usePortfolioInject } from "../../../../../composables/portfolio/usePortfolioInject";
+import { usePortfolioInject } from "@/composables/portfolio/usePortfolioInject";
 
 const { skills } = usePortfolioInject();
 
 // 1. Agrupamento e Formatação
 const formattedSkills = computed(() => {
-    const groups = skills.value.reduce((acc, skill) => {
-        const { service } = skill;
-        if (!acc[service.id]) {
-            acc[service.id] = {
-                id: service.id,
-                title: service.name,
-                subtitle: service.description,
-                icon: service.icon || "uil-server-network",
+    // Tenta pegar a lista de skills.
+    // Em objetos 'reactive', às vezes o .value não é necessário no JS.
+    const rawSkills = skills.value || skills || [];
+
+    // Se ainda assim não for uma array (ex: se for o RefImpl),
+    // garantimos que pegamos a array.
+    const skillsArray = Array.isArray(rawSkills) ? rawSkills : [];
+
+    if (skillsArray.length === 0) return [];
+
+    const groups = skillsArray.reduce((acc, skill) => {
+        const s = skill.service;
+        if (!s) return acc;
+
+        if (!acc[s.id]) {
+            acc[s.id] = {
+                id: s.id,
+                title: s.title,
+                subtitle: s.category,
+                icon: s.icon || "uil-brackets-curly",
                 items: [],
             };
         }
-        acc[service.id].items.push({
+
+        acc[s.id].items.push({
             name: skill.name,
-            percent: skill.proficiency, // Número limpo para o :style
+            percent: skill.proficiency,
         });
+
         return acc;
     }, {});
 
@@ -60,19 +67,23 @@ const toggleSkill = (id) => {
 
 // 3. Divisão de Colunas
 const columns = computed(() => {
-    const half = Math.ceil(formattedSkills.value.length / 2);
-    return [
-        formattedSkills.value.slice(0, half),
-        formattedSkills.value.slice(half),
-    ];
+    // 1. Forçamos data a ser uma array.
+    // Se formattedSkills.value for nulo ou não for array, usamos []
+    const data = Array.isArray(formattedSkills.value)
+        ? formattedSkills.value
+        : [];
+
+    if (data.length === 0) return [[], []]; // Retorna duas colunas vazias por segurança
+
+    const half = Math.ceil(data.length / 2);
+    return [data.slice(0, half), data.slice(half)];
 });
 </script>
 
 <template>
     <section class="skills section" id="skills">
-        <h2 class="section__title">Skills</h2>
-        <span class="section__subtitle">My technical level</span>
-
+        <h2 class="section__title">Habilidades</h2>
+        <span class="section__subtitle">Meu nível técnico</span>
         <div class="skills_container container grid">
             <div v-for="(column, colIndex) in columns" :key="colIndex">
                 <div

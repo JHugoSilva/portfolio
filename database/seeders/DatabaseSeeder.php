@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
                 ProjectSeeder::class,
                 TestimonialSeeder::class,
                 UsersTableSeeder::class,
-                ExperienceSeeder::class
+                ExperienceSeeder::class,
+                EducationSeeder::class
             ]
         );
         // User::factory(10)->create();

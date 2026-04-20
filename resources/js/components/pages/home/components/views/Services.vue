@@ -1,7 +1,9 @@
 <script setup>
-import { ref } from "vue";
+import { computed, onMounted, provide, ref } from "vue";
 
-import { usePortfolioInject } from "../../../../../composables/portfolio/usePortfolioInject";
+import { usePortfolioInject } from "@/composables/portfolio/usePortfolioInject";
+
+// Pega o objeto que o pai proveu
 const { services } = usePortfolioInject();
 
 const activeModal = ref(null);

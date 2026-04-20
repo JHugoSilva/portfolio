@@ -1,47 +1,32 @@
-// composables/useTheme.js
-export function useTheme(buttonId = "theme-button") {
+import { ref, onMounted } from "vue";
+
+export function useTheme() {
+    const darkTheme = "dark-theme";
+    const iconTheme = "uil-sun"; // Ícone que aparece quando está dark
+
+    const toggleTheme = () => {
+        // 1. Alterna a classe no Body
+        document.body.classList.toggle(darkTheme);
+
+        // 2. Salva a preferência
+        const currentTheme = document.body.classList.contains(darkTheme)
+            ? "dark"
+            : "light";
+        localStorage.setItem("selected-theme", currentTheme);
+
+        // Disparamos um evento customizado para que todos os ícones na página se atualizem
+        window.dispatchEvent(new Event("theme-changed"));
+    };
+
     const initTheme = () => {
-        const themeButton = document.getElementById(buttonId);
-        if (!themeButton) return;
-
-        const darkTheme = "dark-theme";
-        const iconTheme = "uil-sun";
-
-        // 👉 pegar do localStorage
         const selectedTheme = localStorage.getItem("selected-theme");
-        const selectedIcon = localStorage.getItem("selected-icon");
-
-        // 👉 aplicar tema salvo
-        if (selectedTheme) {
-            document.body.classList[
-                selectedTheme === "dark" ? "add" : "remove"
-            ](darkTheme);
-
-            themeButton.classList[
-                selectedIcon === "uil-moon" ? "add" : "remove"
-            ](iconTheme);
+        if (selectedTheme === "dark") {
+            document.body.classList.add(darkTheme);
         }
-
-        // 👉 evento de clique
-        themeButton.addEventListener("click", () => {
-            document.body.classList.toggle(darkTheme);
-            themeButton.classList.toggle(iconTheme);
-
-            // 👉 salvar escolha
-            const currentTheme = document.body.classList.contains(darkTheme)
-                ? "dark"
-                : "light";
-
-            const currentIcon = themeButton.classList.contains(iconTheme)
-                ? "uil-moon"
-                : "uil-sun";
-
-            localStorage.setItem("selected-theme", currentTheme);
-            localStorage.setItem("selected-icon", currentIcon);
-        });
     };
 
     return {
         initTheme,
+        toggleTheme,
     };
 }

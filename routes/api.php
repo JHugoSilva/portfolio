@@ -4,6 +4,7 @@
 
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ExperienceController;
@@ -55,6 +56,10 @@ Route::prefix('site')->group(function () {
     });
     Route::controller(ServiceController::class)->group(function () {
         Route::get('services', 'index');
+    });
+
+    Route::controller(ContactController::class)->group(function () {
+        Route::post('/contato', 'enviarEmail');
     });
 });
 

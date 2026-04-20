@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import NotFoundPage from "../components/pages/NotFoundPage.vue";
 import MainView from "../components/pages/home/components/MainView.vue";
 import StudyPublication from "../components/pages/home/components/StudyPublication.vue";
+import PublicationView from "../components/pages/home/components/views/PublicationDetail.vue";
 
 const routes = [
     {
@@ -14,6 +15,12 @@ const routes = [
         path: "/study",
         name: "study",
         component: StudyPublication,
+    },
+    {
+        path: "/projeto/:id",
+        name: "ProjectDetails",
+        component: PublicationView,
+        props: true, // Permite que o ID seja passado como prop para a View
     },
     {
         path: "/:pathMatch(.*)*",

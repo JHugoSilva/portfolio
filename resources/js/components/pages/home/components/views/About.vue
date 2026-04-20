@@ -1,13 +1,13 @@
 <script setup>
-import { usePortfolioInject } from "../../../../../composables/portfolio/usePortfolioInject";
+import { usePortfolioInject } from "@/composables/portfolio/usePortfolioInject";
 
 const { about } = usePortfolioInject();
 </script>
 <template>
     <!--==================== ABOUT ====================-->
     <section class="about section" id="about">
-        <h2 class="section__title">About Me</h2>
-        <span class="section__subtitle">My introduction</span>
+        <h2 class="section__title">Sobre mim</h2>
+        <span class="section__subtitle">Minha apresentação</span>
 
         <div class="about_container container grid">
             <!-- {{ about }} -->
