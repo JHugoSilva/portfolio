@@ -9,6 +9,8 @@ export function usePortfolio() {
         skills: [],
         experiences: [],
         medias: [],
+        projects: [],
+        project: null,
         services: [],
         loading: false,
         errors: null,
@@ -27,20 +29,31 @@ export function usePortfolio() {
         }
     };
 
-    const loadDataAll = async () => {
+    const loadDataAll = async (id = "") => {
         state.loading = true;
         state.errors = null;
 
         try {
             // Executa todas em paralelo para melhor performance
-            await Promise.all([
+            const promises = [
                 fetchData("site/about", "about"),
                 fetchData("site/skills", "skills", "skills"),
                 fetchData("site/educations", "educations", "educations"),
                 fetchData("site/experiences", "experiences", "experiences"),
                 fetchData("site/services", "services", "services"),
                 fetchData("site/medias", "medias", "medias"),
-            ]);
+                fetchData("site/indexSite", "projects", "projects"),
+            ];
+
+            // Se um ID for passado, adicionamos a busca do projeto específico à lista
+            if (id) {
+                promises.push(
+                    fetchData(`site/project/${id}`, "project", "project"),
+                );
+            }
+
+            // Executa todas em paralelo
+            await Promise.all(promises);
         } catch (error) {
             state.errors = `Falha no Loading em Massa: ${error}`;
         } finally {

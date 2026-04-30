@@ -1,146 +1,130 @@
 <script setup>
-import { computed, onMounted, provide, ref, toRefs } from "vue";
+import { onMounted } from "vue";
 import { useRoute } from "vue-router";
-
-import { usePortfolio } from "@/composables/portfolio/usePortfolio";
-import { portfolioKey } from "@/composables/portfolio/keys";
-
-const portfolioProvider = usePortfolio();
-provide(portfolioKey, portfolioProvider);
-
-import { useProject } from "@/composables/projects/useProjects";
-import { projectKey } from "@/composables/projects/keys";
-const project = useProject();
-provide(projectKey, project);
-
-import MainLayout from "../../layouts/MainLayout.vue";
-import AppHeader from "../AppHeader.vue";
-import AppFooter from "../AppFooter.vue";
 
 const route = useRoute();
 
-const projectResponse = ref([]);
-// Isso transforma os refs internos em variáveis locais reativas
-const { medias } = toRefs(portfolioProvider);
+import { usePortfolioInject } from "@/composables/portfolio/usePortfolioInject";
+
+const { project, medias, loadDataAll } = usePortfolioInject();
 
 onMounted(async () => {
-    await portfolioProvider.loadAll();
-    await project.getProject();
-    projectResponse.value = project.projectValue?.value;
+    const id = route.params.id;
+    await loadDataAll(id);
 });
 </script>
 <template>
-    <MainLayout>
-        <template #header>
-            <AppHeader />
-        </template>
-        <!--==================== MAIN ====================-->
-        <main class="main">
-            <section class="publication section" id="publication">
-                <div
-                    class="publication_container container grid"
-                    v-if="projectResponse.id"
-                >
-                    <div class="publication_video-content">
-                        <div class="video_wrapper">
-                            <iframe
-                                width="100%"
-                                height="315"
-                                :src="projectResponse.videoUrl"
-                                title="Video player"
-                                frameborder="0"
-                                allow="
-                                    accelerometer;
-                                    autoplay;
-                                    clipboard-write;
-                                    encrypted-media;
-                                    gyroscope;
-                                    picture-in-picture;
-                                "
-                                allowfullscreen
-                                referrerpolicy="strict-origin-when-cross-origin"
-                                class="publication_video"
-                            ></iframe>
-                        </div>
+    <!--==================== MAIN ====================-->
+    <main class="main">
+        <section class="publication section" id="publication">
+            <div class="publication_container container grid" v-if="project">
+                <div class="publication_video-content">
+                    <div class="video_wrapper">
+                        <iframe
+                            width="200"
+                            height="113"
+                            :src="project.videoUrl"
+                            frameborder="0"
+                            allow="
+                                accelerometer;
+                                autoplay;
+                                clipboard-write;
+                                encrypted-media;
+                                gyroscope;
+                                picture-in-picture;
+                                web-share;
+                            "
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allowfullscreen
+                            title="Meu Portifolio:Laravel,VueJS,PHP,Ubuntu,Hostinger, Supervisor"
+                        ></iframe>
+                        <!-- <iframe
+                            width="100%"
+                            height="315"
+                            :src="project.videoUrl"
+                            title="Video player"
+                            frameborder="0"
+                            allow="
+                                accelerometer;
+                                autoplay;
+                                clipboard-write;
+                                encrypted-media;
+                                gyroscope;
+                                picture-in-picture;
+                            "
+                            allowfullscreen
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            class="publication_video"
+                        ></iframe> -->
+                    </div>
+                </div>
+
+                <div class="publication_data">
+                    <h1 class="publication_title">
+                        {{ project.title }}
+                    </h1>
+                    <h3 class="publication_subtitle">
+                        {{ project.category }}
+                    </h3>
+
+                    <div class="publication_meta">
+                        <span class="publication_date">
+                            <i class="uil uil-calendar-alt"></i>
+                            {{ project.date }}
+                        </span>
                     </div>
 
-                    <div class="publication_data">
-                        <h1 class="publication_title">
-                            {{ projectResponse.title }}
-                        </h1>
-                        <h3 class="publication_subtitle">
-                            {{ projectResponse.category }}
-                        </h3>
+                    <p
+                        class="publication_description"
+                        v-html="project.longDescription"
+                    ></p>
 
-                        <div class="publication_meta">
-                            <span class="publication_date">
-                                <i class="uil uil-calendar-alt"></i>
-                                {{ projectResponse.date }}
-                            </span>
-                        </div>
+                    <div class="publication_buttons" style="margin-top: 15px">
+                        <a
+                            :href="project.projectLink"
+                            target="_blank"
+                            class="button button--flex"
+                        >
+                            Ver Projeto Online
+                            <i
+                                class="uil uil-external-link-alt button__icon"
+                            ></i>
+                        </a>
 
-                        <p
-                            class="publication_description"
-                            v-html="projectResponse.longDescription"
-                        ></p>
+                        <router-link
+                            to="/"
+                            class="button button--flex button--ghost"
+                        >
+                            Voltar ao Portfólio
+                        </router-link>
+                    </div>
 
-                        <div class="publication_buttons">
-                            <a
-                                :href="projectResponse.projectLink"
-                                target="_blank"
-                                class="button button--flex"
-                            >
-                                Ver Projeto Online
-                                <i
-                                    class="uil uil-external-link-alt button__icon"
-                                ></i>
-                            </a>
-
-                            <router-link
-                                to="/"
-                                class="button button--flex button--ghost"
-                            >
-                                Voltar ao Portfólio
-                            </router-link>
-                        </div>
-
-                        <div class="publication_share">
-                            <span class="home_social-follow">Compartilhar</span>
-                            <div class="home_social1">
-                                <div class="social-container">
-                                    <a
-                                        v-for="media in medias"
-                                        :key="media.id"
-                                        :href="media.link"
-                                        target="_blank"
-                                        class="home_social-icon"
-                                    >
-                                        <i
-                                            :class="[
-                                                'uil',
-                                                `uil-${media.icon}`,
-                                            ]"
-                                        ></i>
-                                    </a>
-                                </div>
+                    <div class="publication_share">
+                        <!-- <span class="home_social-follow">Compartilhar</span> -->
+                        <div class="home_social1">
+                            <div class="social-container">
+                                <a
+                                    v-for="media in medias"
+                                    :key="media.id"
+                                    :href="media.link"
+                                    target="_blank"
+                                    class="home_social-icon"
+                                >
+                                    <i
+                                        :class="['uil', `uil-${media.icon}`]"
+                                    ></i>
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div v-else class="container">
-                    <p>Carregando detalhes do projeto...</p>
-                </div>
-            </section>
-        </main>
-        <!--==================== SCROLL TOP ====================-->
-        <a href="#" class="scrollup" id="scroll-up">
-            <i class="uil uil-arrow-up scrollup_icon"></i>
-        </a>
-        <template #footer>
-            <AppFooter />
-        </template>
-    </MainLayout>
+            <div v-else class="container">
+                <p>Carregando detalhes do projeto...</p>
+            </div>
+        </section>
+    </main>
 </template>
 
 <style scoped>

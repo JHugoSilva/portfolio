@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
+    public function indexSite()
+    {
+        $projects = Project::latest()->get();
+        return response()->json([
+            'projects' => $projects
+        ]);
+    }
 
     public function index()
     {
@@ -18,14 +25,18 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
+
         $request->validate([
             'title' => 'required',
-            'description' => 'required'
+            'longDescription' => 'required'
         ]);
         $project = new Project();
         $project->title = $request->title;
-        $project->description = $request->description;
-        $project->link = $request->link;
+        $project->date = $request->publicationIn;
+        $project->category = $request->category;
+        $project->projectLink = $request->projectLink;
+        $project->videoUrl = $request->videoUrl;
+        $project->longDescription = $request->longDescription;
 
         if ($request->hasFile('image')) {
             $file_name = time() . '.' . request()->image->getClientOriginalExtension();
@@ -67,9 +78,9 @@ class ProjectController extends Controller
         $project->save();
     }
 
-    public function edit($id)
+    public function show($id)
     {
-        $project = Project::find($id);
+        $project = Project::where('id', $id)->first();
         return response()->json([
             'project' => $project
         ]);

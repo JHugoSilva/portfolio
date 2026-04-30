@@ -1,16 +1,71 @@
 <script setup>
+import { reactive, ref } from "vue";
 import { useProject } from "@/composables/projects/useProjects";
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import { useImagePreview } from "../../../composables/images/useImagePreview";
+import { useProjectData } from "../../../composables/admin/projects/useProjectData";
+import { API_BASE_URL } from "../../../lib/URLBase";
+import { getYoutubeMetaData } from "../../../services/youtubeService";
 
-const {
-    form,
-    errors,
-    editMode,
-    getImagePreview,
-    handleFileChange,
-    persistData,
-} = useProject();
+const { previewUrl, createPreview } = useImagePreview();
+const { insertData, isLoading, error, success } = useProjectData(
+    API_BASE_URL + "/v1/projects",
+);
+
+const errors = ref("");
+const fileInput = ref(null);
+const selectedFile = ref(null);
+const editMode = ref(false);
+
+const form = reactive({
+    title: "",
+    category: "",
+    publicationIn: "",
+    videoUrl: "",
+    projectLink: "",
+    longDescription: "",
+});
+
+const handleSubmit = async () => {
+    const formData = new FormData();
+
+    const meta = await getYoutubeMetaData(form.videoUrl);
+    // const meta = await getYoutubeMetaData(form.videoUrl);
+    formData.append(
+        "title",
+        form.title ? form.title.trim() : meta.title.trim(),
+    );
+
+    formData.append("category", form.category.trim()); //PREENCHIDO
+    formData.append("publicationIn", form.publicationIn.trim()); //PREENCHIDO
+    formData.append("videoUrl", meta.embedUrl); //PREENCHIDO
+    formData.append("projectLink", form.projectLink.trim()); //PREENCHIDO GIT
+    formData.append("longDescription", form.longDescription.trim()); //PREENCHIDO
+
+    if (selectedFile.value) {
+        formData.append("image", selectedFile.value);
+    }
+
+    const result = await insertData(formData);
+    if (result) {
+        form.title = "";
+        form.category = "";
+        form.publicationIn = "";
+        form.videoUrl = "";
+        form.projectLink = "";
+        form.longDescription = "";
+        selectedFile.value = null;
+    }
+};
+
+const onFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        selectedFile.value = file;
+        createPreview(file);
+    }
+};
 </script>
 <template>
     <!--===================ADD PROJECT ====================-->
@@ -51,7 +106,7 @@ const {
                     <label>Data</label>
                     <input
                         type="text"
-                        v-model="form.date"
+                        v-model="form.publicationIn"
                         placeholder="Ex: Outubro, 2023"
                     />
 
@@ -86,12 +141,12 @@ const {
                 <div class="card">
                     <label>Thumbnail / Imagem de Capa</label>
                     <img
-                        :src="getImagePreview()"
+                        :src="previewUrl"
                         id="projects-img"
                         alt="Preview"
                         class="project_img"
                     />
-                    <input type="file" @change="handleFileChange" />
+                    <input type="file" @change="onFileChange" />
                     <p class="info-text">
                         Esta imagem aparecerá na listagem principal.
                     </p>
@@ -101,7 +156,13 @@ const {
 
         <div class="titlebar" style="margin-top: 2rem">
             <div class="spacer"></div>
-            <button @click="handleSave" class="btn-save">Salvar Projeto</button>
+            <button
+                @click="handleSubmit"
+                class="btn-save"
+                :disabled="isLoading"
+            >
+                {{ isLoading ? "Salvando..." : "Salvar Projeto" }}
+            </button>
         </div>
     </section>
 </template>

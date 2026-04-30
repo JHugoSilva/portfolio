@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import NotFoundPage from "../components/pages/NotFoundPage.vue";
 import MainView from "../components/pages/home/components/MainView.vue";
-import StudyPublication from "../components/pages/home/components/StudyPublication.vue";
+import ProjectList from "../components/pages/home/components/views/ProjectsList.vue";
 import PublicationView from "../components/pages/home/components/views/PublicationDetail.vue";
 
 const routes = [
@@ -12,12 +12,12 @@ const routes = [
         component: MainView,
     },
     {
-        path: "/study",
-        name: "study",
-        component: StudyPublication,
+        path: "/projects",
+        name: "projects",
+        component: ProjectList,
     },
     {
-        path: "/projeto/:id",
+        path: "/project/:id",
         name: "ProjectDetails",
         component: PublicationView,
         props: true, // Permite que o ID seja passado como prop para a View

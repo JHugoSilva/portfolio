@@ -28,7 +28,8 @@ class ToSendContact implements ShouldQueue
     {
         // Disparar o e-mail
         // O destinatário pode ser fixo (o teu email) ou dinâmico
-        Mail::to($event->contact->email)
+        //hugo-dev@hugodev.io
+        Mail::to('hugo-dev@hugodev.io')
             ->later(Carbon::now()->addSeconds(3), new ContactSiteMail($event->contact, $event->about, $event->medias));
     }
 }

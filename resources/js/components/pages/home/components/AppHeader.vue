@@ -2,6 +2,9 @@
 import { nextTick, onMounted, onUnmounted, ref } from "vue";
 import { useTheme } from "@/lib/useTheme";
 const { initTheme, toggleTheme } = useTheme("theme-button");
+import { useRoute } from "vue-router"; // Importe o useRoute
+
+const route = useRoute(); // Instancie a rota atual
 
 const activeSection = ref("home");
 const showMenu = ref(false);
@@ -12,18 +15,43 @@ import { usePortfolioInject } from "@/composables/portfolio/usePortfolioInject";
 const { about } = usePortfolioInject();
 
 const toggleMenu = () => {
-    console.log("Clique detetado! Estado anterior:", showMenu.value);
     showMenu.value = !showMenu.value;
-    console.log("Estado atual:", showMenu.value);
 };
 
 const closeMenu = () => {
-    console.log("Fechando...");
     showMenu.value = false;
 };
 
+// Função para limitar a execução de outra função
+function throttle(func, limit) {
+    let inThrottle;
+    return function () {
+        const args = arguments;
+        const context = this;
+        if (!inThrottle) {
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => (inThrottle = false), limit);
+        }
+    };
+}
+
+const updateURL = throttle((sectionId) => {
+    const newHash = sectionId ? `#${sectionId}` : " ";
+
+    // Só atualiza se o hash realmente mudou
+    if (window.location.hash !== newHash) {
+        // CORREÇÃO: Pegamos o estado atual do histórico antes de substituir
+        const currentState = window.history.state;
+
+        // Passamos o currentState como primeiro argumento em vez de null
+        window.history.replaceState(currentState, "", newHash);
+    }
+}, 200); // 200ms é um tempo seguro
+
 // Função para detectar qual seção está visível
 const handleAllScrolls = () => {
+    if (route.path !== "/") return;
     const scrollY = window.pageYOffset;
 
     // 1. Lógica do Scroll Up (Botão flutuante)
@@ -37,8 +65,15 @@ const handleAllScrolls = () => {
         const sectionId = current.getAttribute("id");
         if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
             activeSection.value = sectionId;
+            updateURL(sectionId);
         }
     });
+
+    // Limpar a URL se estiver no topo
+    if (scrollY < 100) {
+        activeSection.value = "home";
+        updateURL(""); // Passa vazio para remover o hash
+    }
 };
 
 onMounted(async () => {
@@ -80,7 +115,7 @@ const navLinks = [
                 :class="{ 'show-menu': showMenu }"
                 id="nav-menu"
             >
-                <ul class="nav_list grid">
+                <ul v-if="route.path === '/'" class="nav_list grid">
                     <li v-for="link in navLinks" :key="link.hash">
                         <a
                             :href="link.hash"
@@ -105,6 +140,15 @@ const navLinks = [
                             style="cursor: pointer"
                         ></i>
                     </div>
+                </ul>
+
+                <ul v-else class="nav_list grid">
+                    <li>
+                        <router-link to="/" class="nav_link">
+                            <i class="uil uil-arrow-left nav_icon"></i>
+                            Voltar para a tela principal
+                        </router-link>
+                    </li>
                 </ul>
                 <i
                     class="uil uil-times nav_close"

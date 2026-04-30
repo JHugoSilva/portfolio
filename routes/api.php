@@ -61,6 +61,11 @@ Route::prefix('site')->group(function () {
     Route::controller(ContactController::class)->group(function () {
         Route::post('/contato', 'enviarEmail');
     });
+
+    Route::controller(ProjectController::class)->group(function () {
+        Route::get('indexSite', 'indexSite');
+        Route::get('project/{id}', 'show');
+    });
 });
 
 Route::middleware('auth:sanctum')->group(function () {

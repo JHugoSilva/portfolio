@@ -1,52 +1,33 @@
 <script setup>
-import { onMounted, provide } from "vue";
+import { defineAsyncComponent } from "vue";
 
-import MainLayout from "../layouts/MainLayout.vue";
-import AppHeader from "./AppHeader.vue";
-import AppFooter from "./AppFooter.vue";
+const Home = defineAsyncComponent(() => import("./views/Home.vue"));
+const About = defineAsyncComponent(() => import("./views/About.vue"));
+const Portfolio = defineAsyncComponent(() => import("./views/Portfolio.vue"));
+const ProjectCards = defineAsyncComponent(
+    () => import("./views/ProjectCards.vue"),
+);
 
-import About from "./views/About.vue";
-import Home from "./views/Home.vue";
-import Portfolio from "./views/Portfolio.vue";
-import Project from "./views/Project.vue";
-import Testimonial from "./views/Testimonial.vue";
-import ContactMe from "./views/ContactMe.vue";
-import Qualification from "./views/Qualification.vue";
-import Service from "./views/Services.vue";
-import Skill from "./views/Skills.vue";
-
-import { usePortfolio } from "@/composables/portfolio/usePortfolio";
-import { portfolioKey } from "@/composables/portfolio/keys";
-
-const portfolio = usePortfolio();
-
-provide(portfolioKey, portfolio); // O objeto 'portfolio' contém as refs reativas
-
-onMounted(() => {
-    portfolio.loadDataAll();
-});
+const Testimonial = defineAsyncComponent(
+    () => import("./views/Testimonial.vue"),
+);
+const ContactMe = defineAsyncComponent(() => import("./views/ContactMe.vue"));
+const Qualification = defineAsyncComponent(
+    () => import("./views/Qualification.vue"),
+);
+const Services = defineAsyncComponent(() => import("./views/Services.vue"));
+const Skills = defineAsyncComponent(() => import("./views/Skills.vue"));
 </script>
 
 <template>
-    <MainLayout>
-        <template #header>
-            <AppHeader />
-        </template>
-        <!--==================== MAIN ====================-->
-        <main class="main">
-            <section id="home"><Home /></section>
-            <section id="about"><About /></section>
-            <section id="skills"><Skill /></section>
-            <section id="services"><Service /></section>
-            <section id="qualification"><Qualification /></section>
-            <!-- N<section id="portfolio"><Portfolio /></section> -->
-            <section id="projects"><Project /></section>
-            <!-- N<section id="testimonial"><Testimonial /></section> -->
-            <section id="contact"><ContactMe /></section>
-        </main>
-
-        <template #footer>
-            <AppFooter />
-        </template>
-    </MainLayout>
+    <!--==================== MAIN ====================-->
+    <main class="main">
+        <section id="home"><Home /></section>
+        <section id="about"><About /></section>
+        <section id="skills"><Skills /></section>
+        <section id="services"><Services /></section>
+        <section id="qualification"><Qualification /></section>
+        <section id="projects"><ProjectCards /></section>
+        <section id="contact"><ContactMe /></section>
+    </main>
 </template>

@@ -24,12 +24,12 @@ class ContactController extends Controller
             'name'        => 'Hugo Silva',
             'tagline'     => 'Desenvolvedor Full Stack',
             'description' => 'Apaixonado por criar soluções web incríveis.',
-            'home_image'  => 'https://teusite.com/sua-foto.jpg'
+            'home_image'  => 'https://avatars.githubusercontent.com/u/16260996?v=4'
         ];
 
         $medias = [
-            ['link' => 'https://github.com/hugo', 'icon' => 'github'],
-            ['link' => 'https://linkedin.com/in/hugo', 'icon' => 'linkedin']
+            ['link' => 'https://github.com/JHugoSilva', 'icon' => 'github'],
+            ['link' => 'https://www.linkedin.com/in/hugo-silva-b9a666118', 'icon' => 'linkedin']
         ];
 
         try {
